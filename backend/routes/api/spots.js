@@ -68,12 +68,12 @@ router.get('/', async (req, res, next) => {
 
     for (let spot of spots) {
       const spotObj = await spot.toJSON();
-      console.log(spotObj)
+      //console.log(spotObj)
       // gett the average of all the reviews per spot
       let sum = 0;
       for (let i = 0; i < spotObj.Reviews.length; i++) {
         let review = spotObj.Reviews[i];
-        console.log(review);
+        //console.log(review);
         sum += review.stars;
       }
       const avgRating = sum / spotObj.Reviews.length;
@@ -105,7 +105,7 @@ router.get('/', async (req, res, next) => {
 router.post('/', requireAuth, validateSpot, async (req, res, next) => {
   try {
     const { address, city, state, country, lat, lng, name, description, price } = req.body
-    console.log(address, city, state, country, lat, lng, name, description, price)
+    //console.log(address, city, state, country, lat, lng, name, description, price)
 
     const newSpot = await Spot.create({
       ownerId: req.user.id,
@@ -374,7 +374,7 @@ router.get('/:id/reviews', async (req, res, next) => {
     return res.json({ Reviews: reviews });
     // return res.json({Reviews: prettyReviews});
   } catch (error) {
-    console.log("starting point")
+    //console.log("starting point")
     next(error);
   }
 })
