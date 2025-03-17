@@ -2,23 +2,23 @@
 const config = require('./index');
 
 const db = config.db;
-const username = db.username;
-const password = db.password;
-const database = db.database;
-const host = db.host;
+// const username = db.username;
+// const password = db.password;
+// const database = db.database;
+// const host = db.host;
 const schema = db.schema
 
 
 module.exports = {
   development: {
-    username,
-    password,
-    database,
-    host,
-    // storage: config.dbFile,
-    dialect: 'postgres',
+    // username,
+    // password,
+    // database,
+    // host,
+    storage: config.dbFile,
+    dialect: 'sqlite',
     seederStorage: "sequelize",
-    // logQueryParameters: true,
+    logQueryParameters: true,
     typeValidation: true
   },
   production: {
