@@ -15,7 +15,7 @@ module.exports = {
     // password,
     // database,
     // host,
-    storage: config.dbFile,
+    storage: process.env.DB_FILE,
     dialect: 'sqlite',
     seederStorage: "sequelize",
     logQueryParameters: true,
