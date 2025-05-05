@@ -20,7 +20,7 @@ module.exports = {
           model: "Spots",
           key: "id"
         },
-
+        onDelete: "CASCADE"
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -29,13 +29,14 @@ module.exports = {
           model: "Users",
           key: "id"
         },
+        onDelete: "CASCADE"
       },
       startDate: {
-        type: Sequelize.STRING(30),
+        type: Sequelize.DATEONLY,
         allowNull: false,
       },
       endDate: {
-        type: Sequelize.STRING(30),
+        type: Sequelize.DATEONLY,
         allowNull: false,
       },
       createdAt: {

@@ -5,7 +5,6 @@ module.exports = (sequelize) => {
   class Booking extends Model {
     static associate(models) {
       // define association here
-
       Booking.belongsTo(models.User, {
         foreignKey: "userId",
         onDelete: "CASCADE",
@@ -16,7 +15,6 @@ module.exports = (sequelize) => {
         onDelete: "CASCADE",
         hooks: true
       });
-
     };
   };
 
@@ -31,36 +29,51 @@ module.exports = (sequelize) => {
         allowNull: false,
       },
       startDate: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATEONLY,
         allowNull: false,
         validate: {
-          // write a custom validation in here
-          isAGoodDate(val){
-            // 12-05-2025 -> dec, 5th 2025
-             // [12, 05, 2025]
-             const dateArr = val.split("-");
-              for(let date of dateArr){
-                if(typeof parseInt(date) !== "number"){
-                  throw new Error("Oooppps")
-                }
-              }
-
-
+          // // write a custom validation in here
+          // Simplified Version of pastDate
+          isDate: true,
+          isNotInPast(value) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (new Date(value) < today) {
+              throw new Error("Start Date Cannot Be In The Past, Try Again");
+            }
           }
+          // isAGoodDate(val) {
+          //   // 12-05-2025 -> dec, 5th 2025
+          //   // [12, 05, 2025]
+          //   const dateArr = val.split("-");
+          //   for (let date of dateArr) {
+          //     if (typeof parseInt(date) !== "number") {
+          //       throw new Error("Oooppps")
+          //     }
+          //   }
+          // }
         }
       },
       endDate: {
         type: DataTypes.DATEONLY,
         allowNull: false,
-        isAGoodEndDate(val){
-          // checking if the end date comes after the new date
-          const startDate = new Date(this.startDate);
-          const endDate = new Date(val);
-
-          if(endDate < startDate){
-            throw new Error("End date can not come before start date");
+        validate: {
+          isDate: true,
+          isAfterStartDate(value) {
+            if (new Date(value) <= new DATE(this.startDate)) {
+              throw new Error("End Date Cannot Be On or Before Start Date, Try Again");
+            }
           }
         }
+        // isAGoodEndDate(val) {
+        //   // checking if the end date comes after the new date
+        //   const startDate = new Date(this.startDate);
+        //   const endDate = new Date(val);
+
+        //   if (endDate < startDate) {
+        //     throw new Error("End date can not come before start date");
+        //   }
+        // }
       },
     },
     {
