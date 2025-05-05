@@ -1,12 +1,9 @@
 'use strict';
 
-
 let options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;  // define your schema in options object
 }
-
-
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Bookings', {
@@ -23,7 +20,7 @@ module.exports = {
           model: "Spots",
           key: "id"
         },
-
+        onDelete: "CASCADE"
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -32,13 +29,14 @@ module.exports = {
           model: "Users",
           key: "id"
         },
+        onDelete: "CASCADE"
       },
       startDate: {
-        type: Sequelize.STRING(30),
+        type: Sequelize.DATEONLY,
         allowNull: false,
       },
       endDate: {
-        type: Sequelize.STRING(30),
+        type: Sequelize.DATEONLY,
         allowNull: false,
       },
       createdAt: {
