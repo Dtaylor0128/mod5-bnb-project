@@ -13,9 +13,43 @@ const { Op } = require('sequelize');
 const { Booking, User, Spot, SpotImage } = require('../../db/models');
 
 
-// Complete route /api/bookings/current
-// Get all of the Current User's Booking
+// -- Validation Middleware for Booking
 
+const validBooking = [
+  check("startDate")
+    .exists({ checkFalsy: true })
+    .isDate()
+    .withMessage("Start date must be a valid date, please try again")
+    .custom(value => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (new Date(value) < today) {
+        throw new Error("Start date cannot be in the past, please try again");
+      }
+      return true;
+    }),
+
+  check("endDate")
+    .exists({ checkFalsy: true })
+    .isDate()
+    .withMessage(" End date cannot be before or on start date, please try again")
+    .custom((value, { req }) => {
+      if (new Date(value) <= new Date(req.body.startDate)) {
+        throw new Error("End date cannot be before or on start date, please try again");
+      }
+      return true;
+    }),
+  handleValidationErrors
+];
+
+
+
+// Complete route /api/bookings/current
+
+
+
+// Get all of the Current User's Booking
+// remember req, res, next allow for middleware chaining
 router.get('/current', requireAuth, async (req, res, next) => {
   try {
     res.status(200);
@@ -38,7 +72,7 @@ router.get('/current', requireAuth, async (req, res, next) => {
 
 
 
-    return res.json({Bookings: bookings});
+    return res.json({ Bookings: bookings });
   } catch (error) {
     next(error);
   }
