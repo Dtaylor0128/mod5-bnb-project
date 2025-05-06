@@ -170,34 +170,49 @@ router.put('/:bookingId', requireAuth, validBooking, async (req, res, next) => {
 
 
 
-
-// Complete route /api/bookings/:bookingId
-// Edit a Booking
-// router.put('/bookingId', async (req, res, next) => {
-//   try {
-
-
-//     return res.json(":)")
-
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-
 // Complete route /api/bookings/:bookingId
 // Delete a Booking
-// router.delete('/:bookingId', requireAuth, async (req, res, next) => {
-//   try {
-//       res.status(200);
+router.delete('/:bookingId', requireAuth, async (req, res, next) => {
+  try {
+    const { bookingId } = req.params;
+    const userId = req.user.id;
+
+    // search for booking
+    const booking = await Booking.findByPk(bookingId, {
+      include: {
+        model: Spot,
+        attributes: ["ownerId"]
+      }
+    });
+
+    //404 if not found
+    if (!booking) {
+      const err = new Error("Booking couldn't be found");
+      err.status = 404;
+      return next(err);
+    }
+    // to delete booking  one must be the booking or spot owner?
+    const isBookingOwner = booking.userId === userId;
+    const isSpotOwner = booking.Spot && booking.Spot.ownerId === userId;
+
+    if (!isBookingOwner && !isSpotOwner) {
+      const err = new Error("Forbidden");
+      err.status = 403;
+      return next(err);
+    }
 
 
-//       return res.json({ message: ":)" });
 
-//   } catch (error) {
-//       next(error); // Error handling stuff in the app.js
-//   }
-// });
+
+    res.status(200);
+
+
+    return res.json({ message: ":)" });
+
+  } catch (error) {
+    next(error); // Error handling stuff in the app.js
+  }
+});
 
 // Exports the route that will be used in the api.index.js
 module.exports = router;
