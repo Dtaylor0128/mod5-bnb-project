@@ -46,9 +46,7 @@ const validBooking = [
 
 
 // Get all of the Current User's Booking
-
 // remember req, res, next allow for middleware chaining
-
 router.get('/current', requireAuth, async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -87,7 +85,6 @@ router.get('/current', requireAuth, async (req, res, next) => {
       return bookingData;
     });
 
-
     return res.json({ Bookings: formattedBookings });
   } catch (error) {
     next(error);
@@ -95,35 +92,81 @@ router.get('/current', requireAuth, async (req, res, next) => {
 });
 
 
+// edit a Booking
+router.put('/:bookingId', requireAuth, validBooking, async (req, res, next) => {
+  try {
+    const { startDate, endDate } = req.body;
+    const { bookingId } = req.params;
+    const userId = req.user.id;
 
+    //Find the booking
+    const booking = await Booking.findByPk(bookingId);
 
-// {
-//   "Bookings": [
-//     {
-//       "id": 1, =========
-//       "spotId": 1, =========
-//       "Spot": { =========
-//         "id": 1, =========
-//         "ownerId": 1, =========
-//         "address": "123 Disney Lane", =========
-//         "city": "San Francisco", =========
-//         "state": "California", =========
-//         "country": "United States of America", =========
-//         "lat": 37.7645358, =========
-//         "lng": -122.4730327, =========
-//         "name": "App Academy", =========
-//         "price": 123, =========
-//         "previewImage": "image url"
-//       },
-//       "userId": 2,
-//       "startDate": "2021-11-19",
-//       "endDate": "2021-11-20",
-//       "createdAt": "2021-11-19 20:39:36",
-//       "updatedAt": "2021-11-19 20:39:36"
-//     }
-//   ]
-// }
+    // check if booking exists
+    if (!booking) {
+      const err = new Error("Booking was not found");
+      err.status = 404;
+      return next(err);
+    }
 
+    // does booking belong to user?
+    if (booking.userId !== userId) {
+      const err = new Error("Forbidden: You need permission to edit this booking");
+      err.status = 403;
+      return next(err);
+    }
+    // check, is booking date in the passed?
+    const currDate = new Date();
+    if (new Date(booking.endDate) < currDate) {
+      const err = new Error("Past bookings cannot be modified");
+      err.status = 403;
+      return next(err);
+    }
+
+    // Booking conflict check
+    const bookingConflictions = await Booking.findAll({
+      where: {
+        spotId: booking.spotId,
+        id: { [Op.ne]: bookingId }, // this should exclude current booking
+        [Op.or]: [
+          // new start date falls within existing booking
+          {
+            startDate: { [Op.lte]: new Date(startDate) },
+            endDate: { [Op.gte]: new Date(startDate) }
+          },
+          // new end date falls withing existing booking
+          {
+            startDate: { [Op.lte]: new Date(endDate) },
+            endDate: { [Op.gte]: new Date(endDate) }
+          },
+          // existing  booking contained by new booking
+          {
+            startDate: { [Op.gte]: new Date(startDate) },
+            endDate: { [Op.lte]: new Date(endDate) }
+          }
+        ]
+      }
+    });
+
+    if (bookingConflictions.length > 0) {
+      const err = new Error(" Sorry these dates have already been booked for this spot");
+      err.status = 403;
+      err.errors = {
+        startDate: "start date conflicts with an existing booking",
+        endDate: " End date conflicts with an existing booking"
+      };
+      return next(err);
+    }
+    //  update a booking
+    const updateBooking = await booking.update({
+      startDate,
+      endDate
+    });
+    return res.json(updateBooking);
+  } catch (error) {
+    next(error);
+  }
+});
 
 
 
@@ -140,18 +183,6 @@ router.get('/current', requireAuth, async (req, res, next) => {
 //     next(error);
 //   }
 // });
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // Complete route /api/bookings/:bookingId
