@@ -200,19 +200,28 @@ router.delete('/:bookingId', requireAuth, async (req, res, next) => {
       err.status = 403;
       return next(err);
     }
+    // Cant delete if booking has started
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const bookingStart = new Date(booking.startDate);
+    if (bookingStart <= today) {
+      const err = new Error("This booking has started and cannot be deleted");
+      err.status = 403;
+      return next(err);
+    }
+    // the pretty way of cant delete booking if started 
+    // const today = newDate();
+    // if (newDate(booking.startDate) <= today ) {
+    //   return res.status(403).json({message: "This booking has started and cannot be deleted"});
+    // }
 
-
-
-
-    res.status(200);
-
-
-    return res.json({ message: ":)" });
+    // Delete and respond
+    await booking.destroy();
+    return res.json({ message: "Successfully deleted" });
 
   } catch (error) {
     next(error); // Error handling stuff in the app.js
   }
 });
 
-// Exports the route that will be used in the api.index.js
 module.exports = router;
