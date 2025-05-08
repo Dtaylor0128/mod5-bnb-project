@@ -46,9 +46,7 @@ const validBooking = [
 
 
 // Get all of the Current User's Booking
-
 // remember req, res, next allow for middleware chaining
-
 router.get('/current', requireAuth, async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -87,7 +85,6 @@ router.get('/current', requireAuth, async (req, res, next) => {
       return bookingData;
     });
 
-
     return res.json({ Bookings: formattedBookings });
   } catch (error) {
     next(error);
@@ -95,78 +92,136 @@ router.get('/current', requireAuth, async (req, res, next) => {
 });
 
 
+// edit a Booking
+router.put('/:bookingId', requireAuth, validBooking, async (req, res, next) => {
+  try {
+    const { startDate, endDate } = req.body;
+    const { bookingId } = req.params;
+    const userId = req.user.id;
 
+    //Find the booking
+    const booking = await Booking.findByPk(bookingId);
 
-// {
-//   "Bookings": [
-//     {
-//       "id": 1, =========
-//       "spotId": 1, =========
-//       "Spot": { =========
-//         "id": 1, =========
-//         "ownerId": 1, =========
-//         "address": "123 Disney Lane", =========
-//         "city": "San Francisco", =========
-//         "state": "California", =========
-//         "country": "United States of America", =========
-//         "lat": 37.7645358, =========
-//         "lng": -122.4730327, =========
-//         "name": "App Academy", =========
-//         "price": 123, =========
-//         "previewImage": "image url"
-//       },
-//       "userId": 2,
-//       "startDate": "2021-11-19",
-//       "endDate": "2021-11-20",
-//       "createdAt": "2021-11-19 20:39:36",
-//       "updatedAt": "2021-11-19 20:39:36"
-//     }
-//   ]
-// }
+    // check if booking exists
+    if (!booking) {
+      const err = new Error("Booking was not found");
+      err.status = 404;
+      return next(err);
+    }
 
+    // does booking belong to user?
+    if (booking.userId !== userId) {
+      const err = new Error("Forbidden: You need permission to edit this booking");
+      err.status = 403;
+      return next(err);
+    }
+    // check, is booking date in the passed?
+    const currDate = new Date();
+    if (new Date(booking.endDate) < currDate) {
+      const err = new Error("Past bookings cannot be modified");
+      err.status = 403;
+      return next(err);
+    }
 
+    // Booking conflict check
+    const bookingConflictions = await Booking.findAll({
+      where: {
+        spotId: booking.spotId,
+        id: { [Op.ne]: bookingId }, // this should exclude current booking
+        [Op.or]: [
+          // new start date falls within existing booking
+          {
+            startDate: { [Op.lte]: new Date(startDate) },
+            endDate: { [Op.gte]: new Date(startDate) }
+          },
+          // new end date falls withing existing booking
+          {
+            startDate: { [Op.lte]: new Date(endDate) },
+            endDate: { [Op.gte]: new Date(endDate) }
+          },
+          // existing  booking contained by new booking
+          {
+            startDate: { [Op.gte]: new Date(startDate) },
+            endDate: { [Op.lte]: new Date(endDate) }
+          }
+        ]
+      }
+    });
 
-
-
-// Complete route /api/bookings/:bookingId
-// Edit a Booking
-// router.put('/bookingId', async (req, res, next) => {
-//   try {
-
-
-//     return res.json(":)")
-
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-
-
-
-
-
-
-
-
-
-
+    if (bookingConflictions.length > 0) {
+      const err = new Error(" Sorry these dates have already been booked for this spot");
+      err.status = 403;
+      err.errors = {
+        startDate: "start date conflicts with an existing booking",
+        endDate: " End date conflicts with an existing booking"
+      };
+      return next(err);
+    }
+    //  update a booking
+    const updateBooking = await booking.update({
+      startDate,
+      endDate
+    });
+    return res.json(updateBooking);
+  } catch (error) {
+    next(error);
+  }
+});
 
 
 
 // Complete route /api/bookings/:bookingId
 // Delete a Booking
-// router.delete('/:bookingId', requireAuth, async (req, res, next) => {
-//   try {
-//       res.status(200);
+router.delete('/:bookingId', requireAuth, async (req, res, next) => {
+  try {
+    const { bookingId } = req.params;
+    const userId = req.user.id;
 
+    // search for booking
+    const booking = await Booking.findByPk(bookingId, {
+      include: {
+        model: Spot,
+        attributes: ["ownerId"]
+      }
+    });
 
-//       return res.json({ message: ":)" });
+    //404 if not found
+    if (!booking) {
+      const err = new Error("Booking couldn't be found");
+      err.status = 404;
+      return next(err);
+    }
+    // to delete booking  one must be the booking or spot owner?
+    const isBookingOwner = booking.userId === userId;
+    const isSpotOwner = booking.Spot && booking.Spot.ownerId === userId;
 
-//   } catch (error) {
-//       next(error); // Error handling stuff in the app.js
-//   }
-// });
+    if (!isBookingOwner && !isSpotOwner) {
+      const err = new Error("Forbidden");
+      err.status = 403;
+      return next(err);
+    }
+    // Cant delete if booking has started
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const bookingStart = new Date(booking.startDate);
+    if (bookingStart <= today) {
+      const err = new Error("This booking has started and cannot be deleted");
+      err.status = 403;
+      return next(err);
+    }
+    // the pretty way of cant delete booking if started 
+    // const today = newDate();
+    // if (newDate(booking.startDate) <= today ) {
+    //   return res.status(403).json({message: "This booking has started and cannot be deleted"});
+    // }
 
-// Exports the route that will be used in the api.index.js
+    // Delete and respond
+    await booking.destroy();
+    return res.json({ message: "Successfully deleted" });
+
+  } catch (error) {
+    next(error); // Error handling stuff in the app.js
+  }
+});
+
 module.exports = router;
