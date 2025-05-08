@@ -43,8 +43,6 @@ const validBooking = [
 
 // Complete route /api/bookings/current
 
-
-
 // Get all of the Current User's Booking
 // remember req, res, next allow for middleware chaining
 router.get('/current', requireAuth, async (req, res, next) => {

@@ -10,7 +10,7 @@
     "start:development": "nodemon ./bin/www",
     "start:production": "node ./bin/www",
     "build": "node psql-setup-script.js",
-    "postgres":"npx dotenv sequelize create",
+    "postgres": "npx dotenv sequelize create",
     "db:create": "dotenv sequelize-cli db:create",
     "db:reset": "rm -rf ./db/dev.db && npx dotenv sequelize db:migrate && npx dotenv sequelize db:seed:all"
   },

@@ -16,7 +16,8 @@ module.exports = {
     // database,
     // host,
     storage: config.dbFile,
-    dialect: 'postgres',
+    //remember to switch back to postgres
+    dialect: 'sqlite',
     seederStorage: "sequelize",
     logQueryParameters: true,
     typeValidation: true
