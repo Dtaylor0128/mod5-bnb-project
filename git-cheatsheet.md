@@ -56,4 +56,4 @@ Following these steps, the example would look like:
 > git merge staging
 ```
 
-   
+   rememeber to pull and push. its soooo important
