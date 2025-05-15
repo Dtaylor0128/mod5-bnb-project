@@ -42,6 +42,7 @@ module.exports = (sequelize) => {
           //     throw new Error("Start date cannot be in the past, please try again");
           //   }
           // }
+
           isAGoodDate(val) {
             // 12-05-2025 -> dec, 5th 2025
             // [12, 05, 2025]
@@ -58,22 +59,23 @@ module.exports = (sequelize) => {
         type: DataTypes.DATEONLY,
         allowNull: false,
         validate: {
-          isDate: true,
-          isAfterStartDate(value) {
-            if (new Date(value) <= new Date(this.startDate)) {
-              throw new Error("End date cannot be before or on start date, please try again");
+          // isDate: true,
+          // isAfterStartDate(value) {
+          //   if (new Date(value) <= new Date(this.startDate)) {
+          //     throw new Error("End date cannot be before or on start date, please try again");
+          //   }
+          // }
+
+          isAGoodEndDate(val) {
+            // checking if the end date comes after the new date
+            const startDate = new Date(this.startDate);
+            const endDate = new Date(val);
+
+            if (endDate < startDate) {
+              throw new Error("End date can not come before start date");
             }
           }
         }
-        // isAGoodEndDate(val) {
-        //   // checking if the end date comes after the new date
-        //   const startDate = new Date(this.startDate);
-        //   const endDate = new Date(val);
-
-        //   if (endDate < startDate) {
-        //     throw new Error("End date can not come before start date");
-        //   }
-        // }
       },
     },
     {
