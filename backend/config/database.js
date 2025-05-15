@@ -15,11 +15,12 @@ module.exports = {
     // password,
     // database,
     // host,
-    storage: process.env.DB_FILE,
+    storage: process.env.DB_FILE || 'db/dev.db',
     dialect: 'sqlite',
     seederStorage: "sequelize",
     logQueryParameters: true,
-    typeValidation: true
+    typeValidation: true,
+    logging: console.log
   },
   production: {
     use_env_variable: 'DATABASE_URL',

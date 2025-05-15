@@ -34,24 +34,24 @@ module.exports = (sequelize) => {
         validate: {
           // // write a custom validation in here
           // Simplified Version of pastDate
-          isDate: true,
-          isNotInPast(value) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            if (new Date(value) < today) {
-              throw new Error("Start date cannot be in the past, please try again");
-            }
-          }
-          // isAGoodDate(val) {
-          //   // 12-05-2025 -> dec, 5th 2025
-          //   // [12, 05, 2025]
-          //   const dateArr = val.split("-");
-          //   for (let date of dateArr) {
-          //     if (typeof parseInt(date) !== "number") {
-          //       throw new Error("Oooppps")
-          //     }
+          // isDate: true,
+          // isNotInPast(value) {
+          //   const today = new Date();
+          //   today.setHours(0, 0, 0, 0);
+          //   if (new Date(value) < today) {
+          //     throw new Error("Start date cannot be in the past, please try again");
           //   }
           // }
+          isAGoodDate(val) {
+            // 12-05-2025 -> dec, 5th 2025
+            // [12, 05, 2025]
+            const dateArr = val.split("-");
+            for (let date of dateArr) {
+              if (typeof parseInt(date) !== "number") {
+                throw new Error("Start date cannot be in the past, please try again")
+              }
+            }
+          }
         }
       },
       endDate: {
