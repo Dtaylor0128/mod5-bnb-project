@@ -1,3 +1,5 @@
+// load datbase
+require('dotenv').config();
 //--Imports--
 const express = require('express');
 require('express-async-errors');
