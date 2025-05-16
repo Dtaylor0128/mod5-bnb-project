@@ -10,7 +10,7 @@
     "start:development": "nodemon ./bin/www",
     "start:production": "node ./bin/www",
     "build": "node psql-setup-script.js",
-    "postgres":"npx dotenv sequelize create",
+    "postgres": "npx dotenv sequelize create",
     "db:create": "dotenv sequelize-cli db:create",
     "db:reset": "rm -rf ./db/dev.db && npx dotenv sequelize db:migrate && npx dotenv sequelize db:seed:all"
   },
@@ -22,7 +22,7 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "csurf": "^1.2.2",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.5.0",
     "express": "^4.21.2",
     "express-async-errors": "^3.1.1",
     "express-validator": "^7.2.1",
