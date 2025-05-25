@@ -19,8 +19,22 @@ const removeUser = () => {
     };
 };
 
-//THUNKS
+//THUNKS //user
+export const thunkAuthenticate = () => async (dispatch) => {
+    try {
+        const response = await csrfFetch("/api/restore-user");
+        if (response.ok) {
+            const data = await response.json();
+            dispatch(setUser(data.user));
+        }
+    } catch (e) {
+        return e
+    }
+};
+
+
 export const login = (user) => async (dispatch) => {
+
     const { credential, password } = user;
     const response = await csrfFetch("/api/session", {
         method: "POST",
@@ -29,10 +43,31 @@ export const login = (user) => async (dispatch) => {
             password
         })
     });
+
     const data = await response.json();
-    dispatch(setUser(data.user));
+    if (data.user) {
+        dispatch(setUser(data.user));
+    } else {
+        dispatch(setUser(null));
+    } console.log(data, "this is data");
     return response;
+
+
+
+    // if (response.ok) {
+    //     const data = await response.json();
+    //     dispatch(setUser(data.user));
+    // } else if (response.status < 500) {
+    //     const errorMessages = await response.json();
+    //     return errorMessages.errors;
+    // } else {
+    //     return { server: "Something went wrong. Please try again." };
+    // }
 };
+
+
+
+
 
 export const restoreUser = () => async (dispatch) => {
     const response = await csrfFetch("/api/session");

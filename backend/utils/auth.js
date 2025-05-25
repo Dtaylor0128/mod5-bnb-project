@@ -12,11 +12,17 @@ const setTokenCookie = (res, user) => {
     email: user.email,
     username: user.username,
   };
+
   const token = jwt.sign(
     { data: safeUser },
-    secret,
-    { expiresIn: parseInt(expiresIn) } // 604,800 seconds = 1 week
-  );
+    process.env.JWT_SECRET, // <-- Use env variable directly
+    { expiresIn: process.env.JWT_EXPIRES_IN || '604800s' } // Add 's' for seconds
+  ); // const token = jwt.sign(
+  //   { data: safeUser },
+  //   secret,
+  //   { expiresIn: parseInt(expiresIn) } // 604,800 seconds = 1 week
+  // );
+
 
   const isProduction = process.env.NODE_ENV === "production";
   // Set the token cookie
@@ -36,7 +42,7 @@ const restoreUser = (req, res, next) => {
   const { token } = req.cookies;
   req.user = null;
 
-  return jwt.verify(token, secret, null, async (err, jwtPayload) => {
+  return jwt.verify(token, process.env.JWT_SECRET, null, async (err, jwtPayload) => {
     if (err) {
       return next();
     }
