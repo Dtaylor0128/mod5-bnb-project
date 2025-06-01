@@ -17,7 +17,7 @@ const helmet = require('helmet');
 //--Utility Imports--
 const cookieParser = require('cookie-parser');
 const { environment } = require('./config');
-const { ValidationError } = require('sequelize');
+const { ValidationError, json } = require('sequelize');
 const sequelize = require('./config/database'); // Import the database configuration
 
 const isProduction = environment === 'production';
@@ -85,12 +85,23 @@ app.use((err, _req, _res, next) => {
 app.use((err, _req, res, _next) => {
   res.status(err.status || 500);
   console.error(err);
-  res.json({
-    // title: err.title || 'Server Error',
-    message: err.message,
-    errors: err.errors,
-    // stack: isProduction ? null : err.stack
-  });
+  if (isProduction) {
+    // in production, don't include the stack trace
+    res, json({
+      title: err.title || 'Server Error',
+      message: err.message,
+      errors: err.errors,
+    });
+  } else {
+    // in development, include the stack trace
+    res.json({
+      title: err.title || 'Server Error',
+      message: err.message,
+      status: err.status,
+      errors: err.errors,
+      stack: err.stack
+    });
+  }
 });
 
 module.exports = app;
