@@ -40,11 +40,13 @@ const deleteSpot = (spotId) => {
 };
 
 // Thunks
+
+
 export const getAllSpotsThunk = () => async (dispatch) => {
     const response = await csrfFetch('/api/spots');
     if (response.ok) {
         const spots = await response.json();
-        dispatch(getAllSpotsThunk(spots));
+        dispatch(getAllSpots(spots));
         return spots;
     }
 };
@@ -52,7 +54,7 @@ export const getSpotThunk = (spotId) => async (dispatch) => {
     const response = await csrfFetch(`/api/spots/${spotId}`);
     if (response.ok) {
         const spot = await response.json();
-        dispatch(getSpotThunk(spot));
+        dispatch(getSpot(spot));
         return spot;
     }
 };
@@ -93,37 +95,57 @@ export const deleteExistingSpot = (spotId) => async (dispatch) => {
         return spotId;
     }
 };
+
+// step 7
+// normalize our state
+// const initialState = {
+//     byId: {}, // to store spots by their ID
+//     getAllSpots: [], // to store all spots fetched
+
+// };
+
 // Reducer
-const initialState = {};
+const initialState = {
+    allSpots: {},
+    singleSpot: {}
+};
+
 const spotsReducer = (state = initialState, action) => {
-    let newState;
-
     switch (action.type) {
-        case CREATE_SPOT:
-            return { ...state, [action.payload.id]: action.payload };
-        case GET_SPOT:
-            return { ...state, [action.payload.id]: action.payload };
         case GET_ALL_SPOTS:
-            const spotsArr = action.payload.Spots;
-            //makes new spot in memory
-            newState = { ...state }; // copy new state
-            newState.getAllSpots = new state;
-            let newByIdGetAllSpots = {};
-            for (let spot of spotsArr) {
-                newByIdGetAllSpots[spot.id] = spot; // add each spot to the new object  
-            }
-            newState.byIdGetAllSpots = newByIdGetAllSpots; // assign the new object to the state
+            const normalizedSpots = action.payload.reduce((acc, spot) => {
+                acc[spot.id] = spot;
+                return acc;
+            }, {});
+            return { ...state, allSpots: normalizedSpots };
 
-            return newState;
-
+        case GET_SPOT:
+        case CREATE_SPOT:
         case UPDATE_SPOT:
-            return { ...state, [action.payload.id]: action.payload };
+            return {
+                ...state,
+                allSpots: {
+                    ...state.allSpots,
+                    [action.payload.id]: action.payload
+                },
+                singleSpot: {
+                    [action.payload.id]: action.payload
+                }
+            };
+
         case DELETE_SPOT:
-            const newState = { ...state };
-            delete newState[action.payload];
+            const newState = {
+                ...state,
+                allSpots: { ...state.allSpots },
+                singleSpot: {}
+            };
+            delete newState.allSpots[action.payload];
             return newState;
+
         default:
             return state;
     }
 };
+
+
 export default spotsReducer;

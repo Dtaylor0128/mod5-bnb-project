@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import * as sessionActions from './store/session';
+//import Splash from './components/Splash/Splash';
 import LandingPage from './pages/landingPage/LandingPage';
 
 function Layout() {
