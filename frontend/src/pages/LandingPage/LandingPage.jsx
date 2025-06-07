@@ -17,7 +17,7 @@ import SpotCard from "../../components/SpotCard/SpotCard"; // Assuming this is t
 //     // useEffect(() => {
 //     //     if(Object.keys(spots).length === 0)
 //     //         console.log('dispatch')
-//     //         dispatch(loadAllSpots())
+//     //         dispatch(getAllSpots())
 
 //     // },[dispatch])
 
@@ -38,13 +38,13 @@ import SpotCard from "../../components/SpotCard/SpotCard"; // Assuming this is t
 
 
 
-//     // useEffect(() => {
-//     //     if (!isLoaded) {
-//     //         //console.log("Dispatching loadAllSpots");
-//     //         dispatch(getAllSpotsThunk())
-//     //         setIsLoaded(true);
-//     //     }
-//     // }, [dispatch, setIsLoaded, isLoaded]);
+// useEffect(() => {
+//     if (!isLoaded) {
+//         //console.log("Dispatching loadAllSpots");
+//         dispatch(getAllSpotsThunk())
+//         setIsLoaded(true);
+//     }
+// }, [dispatch, setIsLoaded, isLoaded]);
 
 
 //
@@ -52,13 +52,15 @@ import SpotCard from "../../components/SpotCard/SpotCard"; // Assuming this is t
 
 const LandingPage = () => {
     const dispatch = useDispatch();
-    //const [isLoaded, setIsLoaded] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
     // Get spots from Redux store
     // const spots = useSelector(state =>
     //     state.spots.allSpots ? Object.values(state.spots.allSpots) : []
     // );
     const spots = useSelector((state) => state.spots ? Object.values(state.spots) : []);
     // Simplified useEffect for initial load
+
+
     useEffect(() => {
         const loadData = async () => {
             try {
@@ -72,16 +74,17 @@ const LandingPage = () => {
         };
 
         loadData();
-    }, [dispatch]); // Empty array ensures this runs only once on mount
+    }, [dispatch, isLoaded, setIsLoaded]); // Empty array ensures this runs only once on mount
     console.log("Spots in LandingPage:", spots);
     // Loading state (optional - remove if using skeleton/placeholder)
     if (spots.length === 0) return <div>Loading spots...</div>;
 
     return (
         <div className="spot-list">
-            {spots.map(spot => (
-                <SpotCard key={spot.id} spot={spot} />
-            ))}
+            {spots &&
+                spots.map(spot => (
+                    <SpotCard key={spot.id} spot={spot} />
+                ))}
         </div>
     );
 };

@@ -1,0 +1,6 @@
+.spot-buttons {
+    display: flex;
+    flex-direction: row;
+    border-radius: 10px;
+    gap: 5px;
+}

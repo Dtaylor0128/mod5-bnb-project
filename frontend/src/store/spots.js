@@ -72,7 +72,7 @@ export const createNewSpotThunk = (spot) => async (dispatch) => {
         return newSpot;
     }
 };
-export const updateExistingSpot = (spot) => async (dispatch) => {
+export const updateSpotThunk = (spot) => async (dispatch) => {
     const response = await csrfFetch(`/api/spots/${spot.id}`, {
         method: 'PUT',
         headers: {
@@ -86,7 +86,7 @@ export const updateExistingSpot = (spot) => async (dispatch) => {
         return updatedSpot;
     }
 };
-export const deleteExistingSpot = (spotId) => async (dispatch) => {
+export const deleteSpotThunk = (spotId) => async (dispatch) => {
     const response = await csrfFetch(`/api/spots/${spotId}`, {
         method: 'DELETE'
     });
@@ -146,6 +146,7 @@ const spotsReducer = (state = initialState, action) => {
             return state;
     }
 };
+
 
 
 export default spotsReducer;

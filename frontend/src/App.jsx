@@ -4,7 +4,9 @@ import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import * as sessionActions from './store/session';
 //import Splash from './components/Splash/Splash';
-import LandingPage from './pages/landingPage/LandingPage';
+import LandingPage from './pages/LandingPage/LandingPage';
+import UpdateSpotForm from './pages/UpdateSpotPage';
+
 
 function Layout() {
   const dispatch = useDispatch();
@@ -32,9 +34,26 @@ const router = createBrowserRouter([
         path: '/',
         element: <LandingPage />,
       },
+      // {
+      //   path: '/spots/new',
+      //   element: <CreateSpotForm />
+      // },
+      // {
+      //   path: '/spots/:spotId',
+      //   element: <SpotDetailsPage />
+      // },
+      // {
+      //   path: '/spots/current',
+      //   element: <ManageSpotsPage />
+      // },
+      // {
+      //   path: '/spots/:spotId/edit',
+      //   element: <UpdateSpotForm />
+      // },
       {
-
-      }
+        path: '/reviews/current',
+        element: <h1>manage reviews OPTIONAL</h1>
+      },
     ]
   }
 ]);
