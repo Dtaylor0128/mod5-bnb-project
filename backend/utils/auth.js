@@ -29,7 +29,7 @@ const setTokenCookie = (res, user) => {
 
   return token;
 };
-console.log("JWT Secret:", secret, process.env.JWT_SECRET);
+//console.log("JWT Secret:", secret, process.env.JWT_SECRET);
 
 // Remember Me when returning to website 
 const restoreUser = (req, res, next) => {
