@@ -52,39 +52,21 @@ import SpotCard from "../../components/SpotCard/SpotCard"; // Assuming this is t
 
 const LandingPage = () => {
     const dispatch = useDispatch();
-    const [isLoaded, setIsLoaded] = useState(false);
-    // Get spots from Redux store
-    // const spots = useSelector(state =>
-    //     state.spots.allSpots ? Object.values(state.spots.allSpots) : []
-    // );
-    const spots = useSelector((state) => state.spots ? Object.values(state.spots) : []);
-    // Simplified useEffect for initial load
-
+    const spots = useSelector(state =>
+        state.spots.allSpots ? Object.values(state.spots.allSpots) : []
+    );
 
     useEffect(() => {
-        const loadData = async () => {
-            try {
-                // Only fetch if no spots exist
-                if (spots.length === 0) {
-                    await dispatch(getAllSpotsThunk());
-                }
-            } catch (error) {
-                console.error("Error loading spots:", error);
-            }
-        };
+        dispatch(getAllSpotsThunk());
+    }, [dispatch]); // Fetch once on mount
 
-        loadData();
-    }, [dispatch, isLoaded, setIsLoaded]); // Empty array ensures this runs only once on mount
-    console.log("Spots in LandingPage:", spots);
-    // Loading state (optional - remove if using skeleton/placeholder)
-    if (spots.length === 0) return <div>Loading spots...</div>;
+    if (!spots.length) return <div>Loading...</div>;
 
     return (
         <div className="spot-list">
-            {spots &&
-                spots.map(spot => (
-                    <SpotCard key={spot.id} spot={spot} />
-                ))}
+            {spots.map(spot => (
+                <SpotCard key={spot.id} spot={spot} />
+            ))}
         </div>
     );
 };

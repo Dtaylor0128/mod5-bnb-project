@@ -106,18 +106,26 @@ export const deleteSpotThunk = (spotId) => async (dispatch) => {
 
 // Reducer
 const initialState = {
-    allSpots: {},
+    allSpots: [],
     singleSpot: {}
 };
 
+// const spotsReducer = (state = initialState, action) => {
+//     switch (action.type) {
+//         case GET_ALL_SPOTS:
+//             const normalizedSpots = action.payload.reduce((acc, spot) => {
+//                 acc[spot.id] = spot;
+//                 return acc;
+//             }, {});
+//             return { ...state, allSpots: normalizedSpots };
+// spotsSlice.js
 const spotsReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_ALL_SPOTS:
-            const normalizedSpots = action.payload.reduce((acc, spot) => {
-                acc[spot.id] = spot;
-                return acc;
-            }, {});
-            return { ...state, allSpots: normalizedSpots };
+            return {
+                ...state,
+                allSpots: action.payload.Spots || action.payload // Handle both response structures
+            };
 
         case GET_SPOT:
         case CREATE_SPOT:

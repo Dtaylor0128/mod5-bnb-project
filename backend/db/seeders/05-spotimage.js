@@ -32,7 +32,7 @@ module.exports = {
       },
       {
         spotId: 5,
-        url: "https://spotImage5",
+        url: "https://www.pexels.com/photo/white-house-surrounded-by-trees-1755925/",
         preview: true
       },
 
