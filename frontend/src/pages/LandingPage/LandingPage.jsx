@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"; //useState,useContext, , React
 import { useDispatch, useSelector } from "react-redux";
 import { getAllSpotsThunk } from "../../store/spots";
 import SpotCard from "../../components/SpotCard/SpotCard"; // Assuming this is the correct path to your SpotCard component
-
+//import { se }
 
 // const LandingPage = () => {
 //     const dispatch = useDispatch();
@@ -58,14 +58,14 @@ const LandingPage = () => {
 
     useEffect(() => {
         dispatch(getAllSpotsThunk());
-    }, [dispatch]); // Fetch once on mount
+    }, [dispatch]); // Fetch on mount
 
     if (!spots.length) return <div>Loading...</div>;
 
     return (
         <div className="spot-list">
             {spots.map(spot => (
-                <SpotCard key={spot.id} spot={spot} />
+                spot?.id && <SpotCard key={spot.id} spot={spot} />// null check to ensure API return spots
             ))}
         </div>
     );

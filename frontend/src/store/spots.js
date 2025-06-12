@@ -1,5 +1,5 @@
 import { csrfFetch } from './csrf';
-
+import { createSelector } from '@reduxjs/toolkit';
 //Action types CRUD
 const CREATE_SPOT = "spots/createSpot"
 const GET_SPOT = "spots/getSpot"
@@ -45,9 +45,14 @@ const deleteSpot = (spotId) => {
 export const getAllSpotsThunk = () => async (dispatch) => {
     const response = await csrfFetch('/api/spots');
     if (response.ok) {
-        const spots = await response.json();
-        dispatch(getAllSpots(spots));
-        return spots;
+        const data = await response.json();
+        //best practice to normalize witihin thunk as well spots array to object
+        const normalize = {};
+        data.Spots.forEach(spot => {
+            normalize[spot.id] = spot;
+        })
+        dispatch(getAllSpots(normalize));
+        return normalize;
     }
 };
 export const getSpotThunk = (spotId) => async (dispatch) => {
@@ -104,9 +109,9 @@ export const deleteSpotThunk = (spotId) => async (dispatch) => {
 
 // };
 
-// Reducer
+//Inital state
 const initialState = {
-    allSpots: [],
+    allSpots: {},// normalize object
     singleSpot: {}
 };
 
@@ -118,14 +123,24 @@ const initialState = {
 //                 return acc;
 //             }, {});
 //             return { ...state, allSpots: normalizedSpots };
-// spotsSlice.js
+
+// spotsSlice should take an array of spots and transform them into objects using accumulator0.2
+
+// Reducer 
 const spotsReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_ALL_SPOTS:
             return {
                 ...state,
-                allSpots: action.payload.Spots || action.payload // Handle both response structures
+                allSpots: action.payload // normalized in thunk
             };
+        // return {
+        //     ...state,
+        //     allSpots: action.payload.Spots.reduce((acc, spot) => {
+        //         acc[spot.id] = spot; // Normalize spots by ID
+        //         return acc;
+        //     }, {})
+        // };
 
         case GET_SPOT:
         case CREATE_SPOT:
@@ -155,6 +170,16 @@ const spotsReducer = (state = initialState, action) => {
     }
 };
 
-
-
 export default spotsReducer;
+
+
+/*/ Memoized selector 
+createSelector memoizes the result -> 
+Stable Reference: Returns same array reference if allSpots doesn't change
+Empty Handling: Safely handles undefined allSpots
+*/
+export const selectAllSpots = createSelector(
+    (state) => state.spots.allSpots,
+    (allSpots) => Object.values(allSpots || {})
+);
+

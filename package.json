@@ -13,5 +13,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.8.2"
+  }
 }
