@@ -12,14 +12,14 @@ module.exports = {
     await Spot.bulkCreate([
       {
         ownerId: 1,
-        address: "123 spongebob way",
-        city: "bikini bottom",
-        state: "hawaii",
+        address: "123 Kamehameha highway",
+        city: "Honolulu",
+        state: "Hawaii",
         country: "usa",
         lat: 37.76453,
         lng: -122.47303,
-        name: "Pineapple",
-        description: "pineapple under the sea",
+        name: "North Shore Paradise",
+        description: "Come relax on the country side of hawaii. enjoy the beutiful island and all it treasures",
         price: 55.00
       },
       {
