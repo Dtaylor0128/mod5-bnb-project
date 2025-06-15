@@ -15,6 +15,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@reduxjs/toolkit": "^2.8.2"
+    "@reduxjs/toolkit": "^2.8.2",
+    "redux-devtools-extension": "^2.13.9"
   }
 }

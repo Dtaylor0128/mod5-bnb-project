@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"; //useState,useContext, , React
 import { useDispatch, useSelector } from "react-redux";
 import { getAllSpotsThunk } from "../../store/spots";
+import { selectAllSpots } from "../../store/spots";
 import SpotCard from "../../components/SpotCard/SpotCard"; // Assuming this is the correct path to your SpotCard component
 //import { se }
 
@@ -49,12 +50,10 @@ import SpotCard from "../../components/SpotCard/SpotCard"; // Assuming this is t
 
 //
 // };
-
 const LandingPage = () => {
     const dispatch = useDispatch();
-    const spots = useSelector(state =>
-        state.spots.allSpots ? Object.values(state.spots.allSpots) : []
-    );
+    const spots = useSelector(selectAllSpots);
+    console.log("Spots in LandingPage:", spots);
 
     useEffect(() => {
         dispatch(getAllSpotsThunk());
@@ -65,7 +64,12 @@ const LandingPage = () => {
     return (
         <div className="spot-list">
             {spots.map(spot => (
-                spot?.id && <SpotCard key={spot.id} spot={spot} />// null check to ensure API return spots
+                spot?.id && ( // Add null check
+                    <SpotCard
+                        key={spot.id} // Key here, NOT in SpotCard
+                        spot={spot}
+                    />
+                )
             ))}
         </div>
     );

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 import "./SpotCard.css";
-
 const SpotCard = ({ spot }) => {
     const navigate = useNavigate();
     const [showTooltip, setShowTooltip] = useState(false);

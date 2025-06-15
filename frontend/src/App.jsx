@@ -6,7 +6,7 @@ import * as sessionActions from './store/session';
 //import Splash from './components/Splash/Splash';
 import LandingPage from './pages/LandingPage/LandingPage';
 import UpdateSpotForm from './pages/UpdateSpotPage';
-
+import SpotDetailsPage from './pages/SpotDetailsPage/SpotDetailsPage';
 
 function Layout() {
   const dispatch = useDispatch();
@@ -38,10 +38,10 @@ const router = createBrowserRouter([
       //   path: '/spots/new',
       //   element: <CreateSpotForm />
       // },
-      // {
-      //   path: '/spots/:spotId',
-      //   element: <SpotDetailsPage />
-      // },
+      {
+        path: '/spots/:spotId',
+        element: <SpotDetailsPage />
+      },
       // {
       //   path: '/spots/current',
       //   element: <ManageSpotsPage />

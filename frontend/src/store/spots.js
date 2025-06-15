@@ -179,7 +179,7 @@ Stable Reference: Returns same array reference if allSpots doesn't change
 Empty Handling: Safely handles undefined allSpots
 */
 export const selectAllSpots = createSelector(
-    (state) => state.spots.allSpots,
-    (allSpots) => Object.values(allSpots || {})
+    state => state.spots.allSpots,
+    allSpots => Object.values(allSpots || {})
 );
 
