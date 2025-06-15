@@ -29,16 +29,6 @@ const deleteReview = (payload) => ({
     payload // { spotId, reviewId}
 })
 
-
-// const getReviews = (spotId, reviews) => ({
-//     type: GET_REVIEWS,
-//     spotId, reviews
-// });
-// const deleteReview = (spotId, reviewId) => ({
-//     type: DELETE_REVIEW,
-//     spotId, reviewId
-// }); uses mulitple root field 
-
 //Thunks
 
 export const createReviewThunk = (spotId, payload) => async (dispatch) => {
@@ -62,15 +52,6 @@ export const getReviewsThunk = (spotId) => async (dispatch) => {
         return data;
     }
 };
-// export const getReviewsThunk = (spotId) => async (dispatch) => {
-//     try {
-//         const response = await csrfFetch(`/api/spots/${spotId}/reviews`);
-//         if (!response.ok) throw new Error('Failed to fetch reviews');
-//         // ...rest of thunk
-//     } catch (error) {
-//         console.error("Review fetch error:", error);
-//     }
-// };
 
 export const deleteReviewThunk = (spotId, reviewId) => async (dispatch) => {
     const response = await csrfFetch(`/api/reviews/${reviewId}`,
@@ -82,13 +63,13 @@ export const deleteReviewThunk = (spotId, reviewId) => async (dispatch) => {
     }
 };
 
-
+// initial State
 const initialState = {
     bySpotId: {} // Normalized: { [spotId]: { [reviewId]: review } }
 };
 
 
-//reducer destructure from action payload, less buggy best practice
+//reducer 
 const reviewsReducer = (state = initialState, action) => {
     let newState;
     switch (action.type) {
@@ -123,42 +104,23 @@ const reviewsReducer = (state = initialState, action) => {
 
 export default reviewsReducer;
 
-//Reducer This particular reducer is destructing from root-level fields
-// const reviewsReducer = (state = initialState, action) => {
-//     let newState;
-//     switch (action.type) {
-//         case CREATE_REVIEW:
-//             newState = { ...state };
-//             if (!newState.bySpotId[action.payload.spotId]) newState.bySpotId[action.payload.spotId] = {};
-//             newState.bySpotId[action.payload.spotId][action.payload.id] = action.payload;
-//             return newState;
-//         case GET_REVIEWS:
-//             newState = { ...state, bySpotId: { ...state.bySpotId } };
-//             newState.bySpotId[action.spotId] = {};
-//             action.review.forEach(review => {
-//                 newState.bySpotId[action.spotId][review.id] = review;
-//             });
-//             return newState;
-//         case DELETE_REVIEW:
-//             newState = { ...state, bySpotId: { ...state.bySpotId } };
-//             delete newState.bySpotId[action.spotId][action.reviewId];
-//             return newState;
-//         default:
-//             return state;
-//     }
-// };
-// export default reviewsReducer;
-
-
-
-
 
 // Memoized Selector for all reviews for a spot
 // Get specific review by ID
+// export const selectReviewsForSpot = (spotId) => createSelector(
+//     state => state.reviews?.bySpotId?.[spotId] || {}, // optional chaining
+//     reviewsObj => Object.values(reviewsObj) // stable if reviewsObj hasn/t changed
+// );
+
 export const selectReviewsForSpot = (spotId) => createSelector(
-    (state) => state.reviews?.bySpotId?.[spotId] || {},
-    (reviews) => Object.values(reviews)
+    state => state.reviews?.bySpotId?.[spotId] || {},
+    reviewsObj =>
+        Object.values(reviewsObj).sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        )
 );
+
 // get review by ID
-export const selectReviewById = (spotId, reviewId) => (state) =>
-    state.reviews.bySpotId[spotId]?.[reviewId]; 
+export const selectReviewById = (spotId, reviewId) =>
+    state => state.reviews.bySpotId?.[spotId]?.[reviewId];
+

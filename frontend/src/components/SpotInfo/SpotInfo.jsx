@@ -2,12 +2,19 @@
 import { FaStar } from "react-icons/fa";
 import "./SpotInfo.css";
 
-const SpotInfo = ({ spotDetails }) => {
+const SpotInfo = ({ spotDetails = {} }) => {
     const {
-        Owner, SpotImages,
-        avgStarRating, city, country, description,
-        name, numReviews, price,
-        state } = spotDetails // ownerId,
+        Owner = {},
+        SpotImages = [],
+        avgStarRating = null,
+        city = "",
+        country = "",
+        description = "",
+        name = "",
+        numReviews = "",
+        price = "",
+        state = ""
+    } = spotDetails || {};
 
 
     const handleClick = () => {
