@@ -16,6 +16,9 @@ const SpotInfo = ({ spotDetails = {} }) => {
         state = ""
     } = spotDetails || {};
 
+    const previewImage = SpotImages.find(img => img.preview)?.url || '';
+    const nonPreviewImages = SpotImages.filter(img => !img.preview);
+
 
     const handleClick = () => {
         alert('Feature Coming Soon...')

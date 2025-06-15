@@ -142,7 +142,20 @@ const spotsReducer = (state = initialState, action) => {
         //     }, {})
         // };
 
-        case GET_SPOT:
+        case GET_SPOT: GET_SPOT: {
+            const { id, ...spotData } = action.payload;
+            return {
+                ...state,
+                allSpots: {
+                    ...state.allSpots,
+                    [id]: {
+                        ...state.allSpots[id],
+                        ...spotData
+                    }
+                },
+                singleSpot: action.payload
+            };
+        }
         case CREATE_SPOT:
         case UPDATE_SPOT:
             return {
@@ -155,6 +168,7 @@ const spotsReducer = (state = initialState, action) => {
                     [action.payload.id]: action.payload
                 }
             };
+
 
         case DELETE_SPOT:
             const newState = {

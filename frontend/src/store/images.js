@@ -19,18 +19,31 @@ const deleteSpotImage = (imageId) => ({
     imageId,
 });
 
-export const createSpotImageThunk = (id, payload) => async (dispatch) => {
-    const response = await csrfFetch(`/api/spots/${id}/images`, {
+export const createSpotImageThunk = (spotId, payload) => async (dispatch) => {
+    const response = await csrfFetch(`/api/spots/${spotId}/images`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
     });
 
     if (response.ok) {
-        const data = await response.json()
-        dispatch(createSpotImage(data))
+        const data = await response.json();
+        dispatch(createSpotImage({ ...data, spotId })); // Include spotId
     }
-}
+};
+
+// export const createSpotImageThunk = (id, payload) => async (dispatch) => {
+//     const response = await csrfFetch(`/api/spots/${id}/images`, {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify(payload),
+//     });
+
+//     if (response.ok) {
+//         const data = await response.json()
+//         dispatch(createSpotImage(data))
+//     }
+// };
 
 export const deleteSpotImageThunk = (imageId) => async (dispatch) => {
     const response = await csrfFetch(`/api/spot-images/${imageId}`, {
@@ -49,10 +62,23 @@ const initialState = {};
 const spotImageReducer = (state = initialState, action) => {
     let newState;
     switch (action.type) {
-        case ADD_SPOT_IMAGE:
-            newState = { ...state };
-            newState[action.payload.id] = action.payload;
-            return newState;
+        case ADD_SPOT_IMAGE: {
+            const { spotId, ...image } = action.payload;
+            return {
+                ...state,
+                allSpots: {
+                    ...state.allSpots,
+                    [spotId]: {
+                        ...state.allSpots[spotId],
+                        SpotImages: [...(state.allSpots[spotId]?.SpotImages || []), image]
+                    }
+                },
+                singleSpot: {
+                    ...state.singleSpot,
+                    SpotImages: [...(state.singleSpot?.SpotImages || []), image]
+                }
+            };
+        }
         // case UPDATE_SPOT_IMAGE:
         //     newstate = ;
 

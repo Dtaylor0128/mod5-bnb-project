@@ -10,7 +10,7 @@ const SpotCard = ({ spot }) => {
         navigate(`/spots/${spot.id}`);
     };
 
-    console.log(`Spot ID: ${spot.id}, Avg Rating: ${spot.avgRating}`);
+    //console.log(`Spot ID: ${spot.id}, Avg Rating: ${spot.avgRating}`);
 
     return (
         <div
