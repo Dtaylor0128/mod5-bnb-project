@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"; //useState,useContext, , React
+import { useEffect } from "react"; //useState,useContext, , React
 import { useDispatch, useSelector } from "react-redux";
 import { getAllSpotsThunk } from "../../store/spots";
 import { selectAllSpots } from "../../store/spots";
@@ -14,7 +14,7 @@ const LandingPage = () => {
         console.log('useEffect running, about to dispatch getAllSpotsThunk');
     }, [dispatch]); // Fetch once mount
 
-    if (!spots.length) return <div>Loading...</div>; // handles initial state
+    if (!Array.isArray(spots) || spots.length === 0) return <div>Loading...</div>; // handles initial state
 
     return (
         <div className="spot-list">

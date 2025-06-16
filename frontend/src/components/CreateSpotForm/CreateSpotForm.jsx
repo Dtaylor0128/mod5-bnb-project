@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import { createSpotThunk } from "../../store/spots"
+import { createNewSpotThunk } from "../../store/spots"
 import { createSpotImageThunk } from "../../store/images"
 import "./CreateSpotForm.css"
 
@@ -27,31 +27,23 @@ const CreateSpotForm = () => {
     const [hasSubmitted, setHasSubmitted] = useState(false)
 
     useEffect(() => {
-        const errors = {}
-        if (hasSubmitted === true) {
-            if (!country) errors.country = 'Country is required'
-            if (!address) errors.address = 'Address is required'
-            if (!city) errors.city = 'City is required'
-            if (!state) errors.state = 'State is required'
-            if (!description || description.length < 30) errors.description = 'Description needs a minimum of 30 characters'
-            if (!name) errors.name = 'Name is required'
-            if (!price) errors.price = 'Price is required'
-            if (!previewImage) errors.previewImage = 'Preview image is required'
-            if (!imageUrl1 || !/\.jpg|\.jpeg|\.png$/i.test(imageUrl1)) errors.imageUrl1 = 'Image URL must end in .png .jpg or .jpeg'
-            if (!imageUrl2 || !/\.jpg|\.jpeg|\.png$/i.test(imageUrl2)) errors.imageUrl2 = 'Image URL must end in .png .jpg or .jpeg'
-            if (!imageUrl3 || !/\.jpg|\.jpeg|\.png$/i.test(imageUrl3)) errors.imageUrl3 = 'Image URL must end in .png .jpg or .jpeg'
-            if (!imageUrl4 || !/\.jpg|\.jpeg|\.png$/i.test(imageUrl4)) errors.imageUrl4 = 'Image URL must end in .png .jpg or .jpeg'
-            // if (lat && (lat > 90 || lat < -90)) {
-            //   errors.lat = "Latitude must be within -90 and 90";
-            // }
-            // if (lng && (lng > 180 || lat < -180)) {
-            //   errors.lng = "Longitude must be within -180 and 180";
-            // }
-            setFormErrors(errors)
+        const errors = {};
+        if (hasSubmitted) {
+            if (!country) errors.country = 'Country is required';
+            if (!address) errors.address = 'Address is required';
+            if (!city) errors.city = 'City is required';
+            if (!state) errors.state = 'State is required';
+            if (!description || description.length < 30) errors.description = 'Description needs a minimum of 30 characters';
+            if (!name) errors.name = 'Name is required';
+            if (!price) errors.price = 'Price is required';
+            if (!previewImage) errors.previewImage = 'Preview image is required';
+            if (imageUrl1 && !/\.jpg|\.jpeg|\.png$/i.test(imageUrl1)) errors.imageUrl1 = 'Image URL must end in .png .jpg or .jpeg';
+            if (imageUrl2 && !/\.jpg|\.jpeg|\.png$/i.test(imageUrl2)) errors.imageUrl2 = 'Image URL must end in .png .jpg or .jpeg';
+            if (imageUrl3 && !/\.jpg|\.jpeg|\.png$/i.test(imageUrl3)) errors.imageUrl3 = 'Image URL must end in .png .jpg or .jpeg';
+            if (imageUrl4 && !/\.jpg|\.jpeg|\.png$/i.test(imageUrl4)) errors.imageUrl4 = 'Image URL must end in .png .jpg or .jpeg';
         }
-    }, [hasSubmitted, country, address, city, state, description, name, price, previewImage, imageUrl1, imageUrl2, imageUrl3, imageUrl4]) //lat, lng
-
-
+        setFormErrors(errors);
+    }, [hasSubmitted, country, address, city, state, description, name, price, previewImage, imageUrl1, imageUrl2, imageUrl3, imageUrl4]);
 
     const handleSubmit = async (e) => {
         setHasSubmitted(true)
@@ -77,7 +69,7 @@ const CreateSpotForm = () => {
 
 
         if (previewImage !== "") {
-            dispatch(createSpotThunk(spotData))
+            dispatch(createNewSpotThunk(spotData))
                 .then((data) => {
                     dispatch(createSpotImageThunk(data.id, { url: previewImage, preview: true }))
                     return data

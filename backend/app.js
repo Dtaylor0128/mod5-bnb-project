@@ -53,16 +53,9 @@ app.use(
 );
 
 
-
-
-
-
-
 //----------------Middle ware must be used above this line-------
 // --Routes--
 app.use(routes); // Connect all the routes
-
-
 
 
 // -----ERROR HANDLING----
@@ -111,7 +104,12 @@ app.use((err, _req, res, _next) => {
       stack: err.stack
     });
   }
+});//print all errors to the console
+app.use((err, req, res, next) => {
+  console.error(err); // This should print all errors
+  res.status(err.status || 500).json({ message: err.message });
 });
+
 
 module.exports = app;
 /* Central config file for expreess app resposible for Middlewares, Routes, and Error Handling(se

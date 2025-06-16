@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as reviewActions from '../../store/reviews';
 import { useModal } from '../../context/Modal';
 import { FaStar } from "react-icons/fa";
+import { selectReviewsForSpot } from '../../store/reviews';
 import "./ReviewFormModal.css";
 import * as spotActions from '../../store/spots';
-
 
 function ReviewFormModal({ spotId }) {
     const dispatch = useDispatch();
@@ -19,21 +19,18 @@ function ReviewFormModal({ spotId }) {
     const starsArr = [1, 2, 3, 4, 5];
 
     const sessionUser = useSelector((state) => state.session.user)
-    const spotReviews = Object.values(useSelector((state) => state.reviews))
-
+    const spotReviews = useSelector(selectReviewsForSpot(spotId));
     const reviewExists = spotReviews.find(
-        (review) => review.userId === sessionUser.id
-    )
+        (review) => review.userId === sessionUser?.id
+    );
 
     useEffect(() => {
-        const errors = {}
-
-        if (review.length < 10) errors.review = 'Must be atleast 10 characters'
+        const errors = {};
+        if (review.length < 10) errors.review = 'Must be at least 10 characters'
         if (!stars) errors.stars = 'Must select star rating'
         if (reviewExists) errors.review = "Review already exists for this spot"
-
         setErrors(errors);
-    }, [review, stars, sessionUser.id, reviewExists])
+    }, [review, stars, sessionUser?.id, reviewExists])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -43,15 +40,17 @@ function ReviewFormModal({ spotId }) {
 
         if (Object.keys(errors).length > 0) return;
 
-        const payload = {
-            review,
-            stars
-        }
+        const payload = { review, stars }
         try {
-            await dispatch(reviewActions.createReviewsThunk(spotId, payload))
+            //create review
+            await dispatch(reviewActions.createReviewThunk(spotId, payload))
+            // refresh review list to show new review
+            await dispatch(reviewActions.getReviewsThunk(spotId));
+            // refresh spot details to show updated review count and average rating
             await dispatch(spotActions.getSpotThunk(spotId))
             closeModal()
         } catch (err) {
+            console.error("Error in handleSubmit:", err);
             setServerError("An error occurred while submitting your review. Please try again.");
         }
     }
@@ -77,31 +76,29 @@ function ReviewFormModal({ spotId }) {
                 </div>
                 <br />
                 <div className='star-container'>
-                    {starsArr.map((currStars) => {
-                        return (
-                            <label key={currStars}>
-                                <input
-                                    name="rating"
-                                    type="radio"
-                                    value={currStars}
-                                    onChange={() => setStars(currStars)}
-                                    required
-                                />
-                                <span
-                                    className="star"
-                                    name="rating"
-                                    style={{
-                                        color:
-                                            currStars <= (hover || stars) ? "#027373" : "#A9D9D0",
-                                    }}
-                                    onMouseEnter={() => setHover(currStars)}
-                                    onMouseLeave={() => setHover(null)}
-                                >
-                                    <FaStar />
-                                </span>
-                            </label>
-                        )
-                    })}
+                    {starsArr.map((currStars) => (
+                        <label key={currStars}>
+                            <input
+                                name="rating"
+                                type="radio"
+                                value={currStars}
+                                onChange={() => setStars(currStars)}
+                                required
+                            />
+                            <span
+                                className="star"
+                                name="rating"
+                                style={{
+                                    color:
+                                        currStars <= (hover || stars) ? "#027373" : "#A9D9D0",
+                                }}
+                                onMouseEnter={() => setHover(currStars)}
+                                onMouseLeave={() => setHover(null)}
+                            >
+                                <FaStar />
+                            </span>
+                        </label>
+                    ))}
                     <span>Stars</span>
                 </div>
                 {hasSubmitted && errors.stars && <p>{errors.stars}</p>}

@@ -29,7 +29,7 @@ export async function csrfFetch(url, options = {}) {
         // next promise chain
         return res;
     } catch (e) {
-        console.err('Error in CSRFFetch', e);
+        console.error('Error in CSRFFetch', e);
         throw e;
     }
 }

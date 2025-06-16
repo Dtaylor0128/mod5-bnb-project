@@ -311,10 +311,11 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res, ne
       throw noResourceError;
     }
 
-    // If it does exist -> See if the current user made a review already]
+    // If it does exist -> See if the current user made a review @ spot already ]
     const userReview = await Review.findOne({
       where: {
-        userId: userId
+        userId: userId,
+        spotId: spotId
       }
     });
 
@@ -327,7 +328,7 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res, ne
     } else {
       // TODO: Edit this error message and status code based on api docs
       let alreadyReviewedError = new Error("User already has a review for this spot");
-      alreadyReviewedError.status = 500;
+      alreadyReviewedError.status = 403;
       throw alreadyReviewedError;
     }
 

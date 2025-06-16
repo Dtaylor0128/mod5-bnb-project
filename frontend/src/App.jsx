@@ -4,9 +4,11 @@ import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import * as sessionActions from './store/session';
 //import Splash from './components/Splash/Splash';
+//import CreateSpotPage from './pages/CreateSpotPage/CreateSpotPage';
 import LandingPage from './pages/LandingPage/LandingPage';
-import UpdateSpotForm from './pages/UpdateSpotPage';
+//import UpdateSpotForm from './pages/UpdateSpotPage';
 import SpotDetailsPage from './pages/SpotDetailsPage/SpotDetailsPage';
+import CreateSpotForm from './components/CreateSpotForm/CreateSpotForm';
 
 function Layout() {
   const dispatch = useDispatch();
@@ -34,10 +36,10 @@ const router = createBrowserRouter([
         path: '/',
         element: <LandingPage />,
       },
-      // {
-      //   path: '/spots/new',
-      //   element: <CreateSpotForm />
-      // },
+      {
+        path: '/spots/new',
+        element: <CreateSpotForm />
+      },
       {
         path: '/spots/:spotId',
         element: <SpotDetailsPage />

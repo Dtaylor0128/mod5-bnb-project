@@ -5,7 +5,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import spotsReducer from './spots';
 import reviewsReducer from './reviews';
 import sessionReducer from './session';
-import spotImageReducer from './images';
+//import spotImageReducer from './images';
 
 const store = configureStore({
   reducer: {

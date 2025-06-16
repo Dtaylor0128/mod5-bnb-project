@@ -18,18 +18,23 @@ const SpotDetailsPage = () => {
     const [isLoaded, setIsLoaded] = useState(false);
 
     const spot = useSelector(state => state.spots.allSpots?.[spotId]);
-    const reviews = useSelector(selectReviewsForSpot(spotId));
+    //const reviews = useSelector(selectReviewsForSpot(spotId));
+    const reviews = useSelector(state => {
+        if (!state.reviews?.bySpotId?.[spotId]) return [];
+        return Object.values(state.reviews.bySpotId[spotId]);
+    });
     const currUser = useSelector(state => state.session.user);
 
 
     useEffect(() => {
+        console.log(' SpotDetailsPage useEffect triggered', { spotId, timestamp: Date.now() });
         setIsLoaded(false);
         dispatch(getSpotThunk(spotId))
             .then(() => dispatch(getReviewsThunk(spotId)))
             .then(() => setIsLoaded(true));
     }, [dispatch, spotId]);
 
-    if (!isLoaded) return <h3>Loading spot details...</h3>;
+    if (!isLoaded || !spot) return <h3>Loading spot details...</h3>;
 
     return (
         <div className="page">

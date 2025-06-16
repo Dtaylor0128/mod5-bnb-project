@@ -182,15 +182,9 @@ const spotsReducer = (state = initialState, action) => {
                 ...state,
                 allSpots: action.payload // normalized in thunk
             };
-        // return {
-        //     ...state,
-        //     allSpots: action.payload.Spots.reduce((acc, spot) => {
-        //         acc[spot.id] = spot; // Normalize spots by ID
-        //         return acc;
-        //     }, {})
-        // };
 
         case GET_SPOT: {
+            // Wrapping in {} is fine, but always return state in default!
             const { id, SpotImages = [], ...spotData } = action.payload;
             return {
                 ...state,
@@ -198,12 +192,14 @@ const spotsReducer = (state = initialState, action) => {
                     ...state.allSpots,
                     [id]: {
                         ...state.allSpots[id],
-                        ...spotData
+                        ...spotData,
+                        SpotImages
                     }
                 },
                 singleSpot: action.payload
             };
         }
+
         case CREATE_SPOT:
         case UPDATE_SPOT:
             return {
@@ -217,8 +213,8 @@ const spotsReducer = (state = initialState, action) => {
                 }
             };
 
-
-        case DELETE_SPOT:
+        case DELETE_SPOT: {
+            // Wrap in {} if you declare variables
             const newState = {
                 ...state,
                 allSpots: { ...state.allSpots },
@@ -226,17 +222,76 @@ const spotsReducer = (state = initialState, action) => {
             };
             delete newState.allSpots[action.payload];
             return newState;
+        }
 
         default:
+            // Always return state in default!
             return state;
     }
 };
+// const spotsReducer = (state = initialState, action) => {
+//     switch (action.type) {
+//         case GET_ALL_SPOTS:
+//             return {
+//                 ...state,
+//                 allSpots: action.payload // normalized in thunk
+//             };
+//         // return {
+//         //     ...state,
+//         //     allSpots: action.payload.Spots.reduce((acc, spot) => {
+//         //         acc[spot.id] = spot; // Normalize spots by ID
+//         //         return acc;
+//         //     }, {})
+//         // };
+
+//         case GET_SPOT: {
+//             const { id, SpotImages = [], ...spotData } = action.payload;
+//             return {
+//                 ...state,
+//                 allSpots: {
+//                     ...state.allSpots,
+//                     [id]: {
+//                         ...state.allSpots[id],
+//                         ...spotData,
+//                         SpotImages
+//                     }
+//                 },
+//                 singleSpot: action.payload
+//             };
+//         }
+//         case CREATE_SPOT:
+//         case UPDATE_SPOT:
+//             return {
+//                 ...state,
+//                 allSpots: {
+//                     ...state.allSpots,
+//                     [action.payload.id]: action.payload
+//                 },
+//                 singleSpot: {
+//                     [action.payload.id]: action.payload
+//                 }
+//             };
+
+
+//         case DELETE_SPOT:
+//             const newState = {
+//                 ...state,
+//                 allSpots: { ...state.allSpots },
+//                 singleSpot: {}
+//             };
+//             delete newState.allSpots[action.payload];
+//             return newState;
+
+//         default:
+//             return state;
+//     }
+// };
 
 export default spotsReducer;
 
 
-/*/ Memoized selector 
-createSelector memoizes the result -> 
+/*/ Memoized selector
+createSelector memoizes the result ->
 Stable Reference: Returns same array reference if allSpots doesn't change
 Empty Handling: Safely handles undefined allSpots
 */
@@ -245,11 +300,16 @@ Empty Handling: Safely handles undefined allSpots
 //     allSpots => Object.values(allSpots || [])
 // );
 
+// export const selectAllSpots = createSelector(
+//     [state => state.spots?.allSpots || {}], // Stable input
+//     (allSpots) => {
+//         const spotsArray = Object.values(allSpots);
+//         // Filter out any invalid spots
+//         return spotsArray.filter(spot => spot && spot.id);
+//     }
+// );
+
 export const selectAllSpots = createSelector(
-    [state => state.spots?.allSpots || {}], // Stable input
-    (allSpots) => {
-        const spotsArray = Object.values(allSpots);
-        // Filter out any invalid spots
-        return spotsArray.filter(spot => spot && spot.id);
-    }
+    [state => state.spots?.allSpots || {}],
+    allSpots => Object.values(allSpots).filter(spot => spot && spot.id)
 );
