@@ -46,23 +46,71 @@ export const getAllSpotsThunk = () => async (dispatch) => {
     const response = await csrfFetch('/api/spots');
     if (response.ok) {
         const data = await response.json();
-        //best practice to normalize witihin thunk as well spots array to object
-        const normalize = {};
-        data.Spots.forEach(spot => {
-            normalize[spot.id] = spot;
-        })
-        dispatch(getAllSpots(normalize));
-        return normalize;
+        console.log('API Response:', data); // Debug: Check structure
+        console.log('Spots Array:', data.Spots); // Debug: Check spots
+
+        // Method 1: Using Object.fromEntries() + map()
+        const normalized = Object.fromEntries(
+            data.Spots.map(spot => [spot.id, spot])
+        );
+
+        // Method 2: Using forEach() 
+        // const normalized = {};
+        // data.Spots.forEach(spot => {
+        //     normalized[spot.id] = spot;
+        // });
+
+        dispatch(getAllSpots(normalized));
+        return normalized;
     }
 };
+// export const getAllSpotsThunk = () => async (dispatch) => {
+//     const response = await csrfFetch('/api/spots');
+//     if (response.ok) {
+//         const data = await response.json();
+//         const normalized = data.Spots.reduce((result, spot) => {
+//             result[spot.id] = spot;
+//             return result;
+//         }, {});
+//         dispatch(getAllSpots(normalized));
+//         return normalized;
+//     }
+// };
+
+// export const getAllSpotsThunk = () => async (dispatch) => {
+//     const response = await csrfFetch('/api/spots'); // 👈 Use csrfFetch
+//     if (response.ok) {
+//         const data = await response.json();
+//         const normalized = data.Spots.reduce((acc, spot) => {
+//             acc[spot.id] = spot;
+//             return acc;
+//         }, {});
+//         dispatch(getAllSpots(normalized));
+//     }
+// };
+
+
 export const getSpotThunk = (spotId) => async (dispatch) => {
     const response = await csrfFetch(`/api/spots/${spotId}`);
     if (response.ok) {
-        const spot = await response.json();
-        dispatch(getSpot(spot));
-        return spot;
+        const data = await response.json();
+        // Normalize SpotImages array
+        const spotWithImages = {
+            ...data,
+            SpotImages: data.SpotImages || [] // ensure array exist
+        };
+        dispatch(getSpot(spotWithImages));
     }
 };
+
+// export const getSpotThunk = (spotId) => async (dispatch) => {
+//     const response = await csrfFetch(`/api/spots/${spotId}`);
+//     if (response.ok) {
+//         const spot = await response.json();
+//         dispatch(getSpot(spot));
+//         return spot;
+//     }
+//};
 export const createNewSpotThunk = (spot) => async (dispatch) => {
     const response = await csrfFetch('/api/spots', {
         method: 'POST',
@@ -142,8 +190,8 @@ const spotsReducer = (state = initialState, action) => {
         //     }, {})
         // };
 
-        case GET_SPOT: GET_SPOT: {
-            const { id, ...spotData } = action.payload;
+        case GET_SPOT: {
+            const { id, SpotImages = [], ...spotData } = action.payload;
             return {
                 ...state,
                 allSpots: {
@@ -192,8 +240,16 @@ createSelector memoizes the result ->
 Stable Reference: Returns same array reference if allSpots doesn't change
 Empty Handling: Safely handles undefined allSpots
 */
-export const selectAllSpots = createSelector(
-    state => state.spots.allSpots,
-    allSpots => Object.values(allSpots || {})
-);
+// export const selectAllSpots = createSelector(
+//     state => state.spots.allSpots,
+//     allSpots => Object.values(allSpots || [])
+// );
 
+export const selectAllSpots = createSelector(
+    [state => state.spots?.allSpots || {}], // Stable input
+    (allSpots) => {
+        const spotsArray = Object.values(allSpots);
+        // Filter out any invalid spots
+        return spotsArray.filter(spot => spot && spot.id);
+    }
+);

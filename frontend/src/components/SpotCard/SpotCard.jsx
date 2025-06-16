@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 import "./SpotCard.css";
-const SpotCard = ({ spot }) => {
+const SpotCard = ({ spot = {} }) => {
     const navigate = useNavigate();
     const [showTooltip, setShowTooltip] = useState(false);
-
+    const previewImage = spot.SpotImages?.find(img => img.preview)?.url || spot.previewImage;
     const handleClick = () => {
         navigate(`/spots/${spot.id}`);
     };
@@ -21,17 +21,12 @@ const SpotCard = ({ spot }) => {
             style={{ cursor: 'pointer' }}
         >
             <div className="image-wrapper">
-                <img
-                    src={spot.previewImage}
-                    alt={spot.name}
-                    className="spot-image"
-                />
+                {previewImage && <img src={previewImage} alt={spot.name} className="spot-image" />}
                 {showTooltip && <div className="tooltip">{spot.name}</div>}
             </div>
 
             <div className="spot-details">
                 <span className="top-line">
-
                     <span>{spot.city}, {spot.state}</span>
                     <span className="stars">
                         <FaStar />
@@ -39,7 +34,6 @@ const SpotCard = ({ spot }) => {
                     </span>
                 </span>
                 <p>${spot.price} / night</p>
-
             </div>
         </div>
     )

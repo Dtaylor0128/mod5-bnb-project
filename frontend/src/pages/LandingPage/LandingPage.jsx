@@ -6,14 +6,15 @@ import SpotCard from "../../components/SpotCard/SpotCard"; // Assuming this is t
 
 const LandingPage = () => {
     const dispatch = useDispatch();
-    const spots = useSelector(selectAllSpots);
-    console.log("Spots in LandingPage:", spots);
+    const spots = useSelector(selectAllSpots); // memoized selector
+    //console.log("Spots in LandingPage:", spots);
 
     useEffect(() => {
         dispatch(getAllSpotsThunk());
-    }, [dispatch]); // Fetch on mount
+        console.log('useEffect running, about to dispatch getAllSpotsThunk');
+    }, [dispatch]); // Fetch once mount
 
-    if (!spots.length) return <div>Loading...</div>;
+    if (!spots.length) return <div>Loading...</div>; // handles initial state
 
     return (
         <div className="spot-list">

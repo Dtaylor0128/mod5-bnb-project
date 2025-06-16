@@ -29,7 +29,7 @@ const SpotDetailsPage = () => {
             .then(() => setIsLoaded(true));
     }, [dispatch, spotId]);
 
-    if (!spot || !reviews) return <h3>Loading spot details...</h3>;
+    if (!isLoaded) return <h3>Loading spot details...</h3>;
 
     return (
         <div className="page">

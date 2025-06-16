@@ -1,4 +1,3 @@
-//import React from "react"
 import { FaStar } from "react-icons/fa";
 import "./SpotInfo.css";
 
@@ -11,36 +10,39 @@ const SpotInfo = ({ spotDetails = {} }) => {
         country = "",
         description = "",
         name = "",
-        numReviews = "",
+        numReviews = 0,
         price = "",
         state = ""
-    } = spotDetails || {};
+    } = spotDetails;
 
-    const previewImage = SpotImages.find(img => img.preview)?.url || '';
+    const previewImage = spotDetails?.SpotImages?.find(img => img.preview)?.url || spotDetails?.previewImage;
     const nonPreviewImages = SpotImages.filter(img => !img.preview);
-
 
     const handleClick = () => {
         alert('Feature Coming Soon...')
-    }
+    };
 
     return (
         <div className="page">
             <h2 className="spot-title">{name}</h2>
-            <p className="spot-location">
-                {city}, {state}, {country}
-            </p>
+            <p className="spot-location">{city}, {state}, {country}</p>
             <div className="spot-images">
-                {SpotImages
-                    .sort((a, b) => b.preview - a.preview)
-                    .map((image, index) => (
-                        <img
-                            key={image.id}
-                            src={image.url}
-                            className={index === 0 ? 'large-image' : 'small-image'}
-                        //  className={`preview-${image.preview}`}
-                        />
-                    ))}
+                {previewImage && (
+                    <img
+                        key="preview"
+                        src={previewImage}
+                        className="large-image"
+                        alt={spotDetails?.name}
+                    />
+                )}
+                {nonPreviewImages.map((image, index) => (
+                    <img
+                        key={image.id}
+                        src={image.url}
+                        className="small-image"
+                        alt={`Spot ${index + 1}`}
+                    />
+                ))}
             </div>
             <div className="details-callout-wrapper">
                 <div className="details-container">
@@ -56,11 +58,8 @@ const SpotInfo = ({ spotDetails = {} }) => {
                         <span className="callout-price">${price} night</span>
                         <p className="callout-rating">
                             <FaStar />
-                            {avgStarRating
-                                ? avgStarRating.toFixed(1) // ? Math.round(avgStarRating * 100) / 100
-                                : "New"}{" "}
-                            {numReviews ? "・" + numReviews : ""}{" "}
-                            {numReviews === 0 ? "" : numReviews > 1 ? "reviews" : "review"}
+                            {avgStarRating ? avgStarRating.toFixed(1) : "New"}
+                            {numReviews > 0 && <> ・{numReviews} {numReviews === 1 ? "review" : "reviews"}</>}
                         </p>
                     </div>
                     <div className="button-container">
@@ -71,7 +70,7 @@ const SpotInfo = ({ spotDetails = {} }) => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default SpotInfo;

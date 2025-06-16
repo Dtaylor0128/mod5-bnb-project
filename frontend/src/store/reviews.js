@@ -113,7 +113,7 @@ export default reviewsReducer;
 // );
 
 export const selectReviewsForSpot = (spotId) => createSelector(
-    state => state.reviews?.bySpotId?.[spotId] || {},
+    state => state.reviews?.bySpotId?.[spotId] || [],// return and array when empty to not break memoization
     reviewsObj =>
         Object.values(reviewsObj).sort(
             (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
