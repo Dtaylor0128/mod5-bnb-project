@@ -15,6 +15,7 @@
     transition: transform 0.15s;
     cursor: pointer;
     display: flex;
+    justify-content: center;
     flex-direction: column;
 }
 
@@ -24,17 +25,25 @@
 }
 
 .image-container {
-    width: 100%;
+    width: 10%;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    border-radius: 12px 12px 0 0;
     aspect-ratio: 4/3;
     overflow: hidden;
     background: #eee;
 }
 
 .spot-image {
-    width: 100%;
-    height: 100%;
+    width: 250px;
+    height: 250px;
     object-fit: cover;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px 12px 0 0;
+
 }
 
 .spot-info {
@@ -93,5 +102,3 @@
         grid-template-columns: 1fr;
     }
 }
-
-*/

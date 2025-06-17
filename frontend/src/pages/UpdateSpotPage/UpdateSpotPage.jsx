@@ -4,12 +4,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { updateSpotThunk, getSpotThunk } from "../../store/spots";
 import { createSpotImageThunk, deleteSpotImageThunk } from "../../store/images";
 
+
 const UpdateSpotForm = () => {
+
+    const spot = useSelector((state) => state.spots[spotId]);
     const { spotId } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const spot = useSelector((state) => state.spots[spotId]);
 
     const [country, setCountry] = useState("");
     const [address, setAddress] = useState("");
@@ -74,6 +76,8 @@ const UpdateSpotForm = () => {
         }
     }, [hasSubmitted, country, address, city, state, description, name, price, previewImage, imageUrl1, imageUrl2, imageUrl3, imageUrl4]);
 
+    if (!spot) { return <div>Loading...</div>; }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setHasSubmitted(true);
@@ -85,7 +89,7 @@ const UpdateSpotForm = () => {
             city,
             state,
             country,
-            lat: spot.lat || 0,
+            lat: spot.lat || 0, // Default to 0 if not provided
             lng: spot.lng || 0,
             name,
             description,
@@ -95,11 +99,12 @@ const UpdateSpotForm = () => {
         //const updatedSpot = await dispatch(updateSpotThunk(spotId, spotData)); // 2 arguments
         const updatedSpot = await dispatch(updateSpotThunk({ ...spotData, id: spotId })); //
         if (updatedSpot) {
-            // refetech the spot to get the latest data
+            // refetch the spot to get the latest data
             await dispatch(getSpotThunk(spotId));
 
             // use the updated spot data to manage images
             const refreshedSpot = useSelector((state) => state.spots.allspots[spotId] || state.spots.singleSpot);
+
             const existingPreview = refreshedSpot.SpotImages.find((img) => img.preview === true);
             if (!existingPreview || existingPreview.url !== previewImage) {
                 await dispatch(createSpotImageThunk(spotId, { url: previewImage, preview: true }));
@@ -118,9 +123,7 @@ const UpdateSpotForm = () => {
             navigate(`/spots/${spotId}`);
         }
     };
-    if (!spot) {
-        return <div>Loading...</div>;
-    }
+
 
     return (
         <div className="update-spot-form-container">
