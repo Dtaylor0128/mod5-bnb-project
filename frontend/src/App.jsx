@@ -3,12 +3,13 @@ import { useDispatch } from 'react-redux';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import * as sessionActions from './store/session';
-//import Splash from './components/Splash/Splash';
-//import CreateSpotPage from './pages/CreateSpotPage/CreateSpotPage';
+
 import LandingPage from './pages/LandingPage/LandingPage';
-//import UpdateSpotForm from './pages/UpdateSpotPage';
+import UpdateSpotForm from './pages/UpdateSpotPage/UpdateSpotPage';
 import SpotDetailsPage from './pages/SpotDetailsPage/SpotDetailsPage';
 import CreateSpotForm from './components/CreateSpotForm/CreateSpotForm';
+import ManageSpotsPage from './pages/ManageSpotsPage/ManageSpotsPage';
+
 
 function Layout() {
   const dispatch = useDispatch();
@@ -44,14 +45,14 @@ const router = createBrowserRouter([
         path: '/spots/:spotId',
         element: <SpotDetailsPage />
       },
-      // {
-      //   path: '/spots/current',
-      //   element: <ManageSpotsPage />
-      // },
-      // {
-      //   path: '/spots/:spotId/edit',
-      //   element: <UpdateSpotForm />
-      // },
+      {
+        path: '/spots/current',
+        element: <ManageSpotsPage />
+      },
+      {
+        path: '/spots/:spotId/edit',
+        element: <UpdateSpotForm />
+      },
       {
         path: '/reviews/current',
         element: <h1>manage reviews OPTIONAL</h1>

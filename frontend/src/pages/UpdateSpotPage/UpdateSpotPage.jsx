@@ -92,10 +92,15 @@ const UpdateSpotForm = () => {
             price,
         };
 
-        const updatedSpot = await dispatch(updateSpotThunk(spotId, spotData));
-
+        //const updatedSpot = await dispatch(updateSpotThunk(spotId, spotData)); // 2 arguments
+        const updatedSpot = await dispatch(updateSpotThunk({ ...spotData, id: spotId })); //
         if (updatedSpot) {
-            const existingPreview = spot.SpotImages.find((img) => img.preview === true);
+            // refetech the spot to get the latest data
+            await dispatch(getSpotThunk(spotId));
+
+            // use the updated spot data to manage images
+            const refreshedSpot = useSelector((state) => state.spots.allspots[spotId] || state.spots.singleSpot);
+            const existingPreview = refreshedSpot.SpotImages.find((img) => img.preview === true);
             if (!existingPreview || existingPreview.url !== previewImage) {
                 await dispatch(createSpotImageThunk(spotId, { url: previewImage, preview: true }));
             }
@@ -113,6 +118,9 @@ const UpdateSpotForm = () => {
             navigate(`/spots/${spotId}`);
         }
     };
+    if (!spot) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="update-spot-form-container">
@@ -120,7 +128,7 @@ const UpdateSpotForm = () => {
             <form onSubmit={handleSubmit} className="long-forms">
                 <div className="form-section">
                     <h2>Where&apos;s your place located?</h2>
-                    <p>Guests will only get your exact address once they booked a reservation.</p>
+                    <p>Only Guests will only get your exact address once they booked a reservation.</p>
                     <div className="form-group">
                         <label>Country</label>
                         <input
@@ -193,11 +201,11 @@ const UpdateSpotForm = () => {
 
                 <div className="form-section">
                     <h2>Describe your place to guests</h2>
-                    <p>Mention the best features of your space, any special amenities like fast wifi or parking, and what you love about the neighborhood.</p>
+                    <p>Mention the best features of your space, any special amenities or nearby activities.</p>
                     <div className="form-group">
                         <label>Description</label>
                         <textarea
-                            placeholder="Please write at least 30 characters"
+                            placeholder={spot.description}
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                         />
@@ -207,12 +215,12 @@ const UpdateSpotForm = () => {
 
                 <div className="form-section">
                     <h2>Create a title for your spot</h2>
-                    <p>Catch guests attention with a spot title that highlights what makes your place special.</p>
+                    <p>what makes this place special? Think of something catchy and easy to remember.</p>
                     <div className="form-group">
                         <label>Name</label>
                         <input
                             type="text"
-                            placeholder="Name of your spot"
+                            placeholder={spot.name}
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
@@ -228,7 +236,7 @@ const UpdateSpotForm = () => {
                         <div className="price"> <span>$</span>
                             <input
                                 type="number"
-                                placeholder="Price per night (USD)"
+                                placeholder={spot.price}
                                 value={price}
                                 onChange={(e) => setPrice(e.target.value)}
                             />
@@ -238,8 +246,8 @@ const UpdateSpotForm = () => {
                 </div>
 
                 <div className="form-section">
-                    <h2>Liven up your spot with photos</h2>
-                    <p>Submit a link to at least one photo to publish your spot.</p>
+                    <h2>Bring life to your spot with photos</h2>
+                    <p>Submit at least one photo to publish your spot.</p>
                     <div className="form-group">
 
                         <input
@@ -248,6 +256,16 @@ const UpdateSpotForm = () => {
                             value={previewImage}
                             onChange={(e) => setPreviewImage(e.target.value)}
                         />
+                        {previewImage && (
+                            <img
+                                src={previewImage}
+                                alt="Preview"
+                                className="preview-image"
+                                onError={(e) => {
+                                    e.target.src = 'https://via.placeholder.com/400x300?text=No+Image';
+                                }}
+                            />
+                        )}
                         {formErrors.previewImage && <p className="error">{formErrors.previewImage}</p>}
                     </div>
                     <br />
@@ -259,6 +277,16 @@ const UpdateSpotForm = () => {
                             value={imageUrl1}
                             onChange={(e) => setImageUrl1(e.target.value)}
                         />
+                        {imageUrl1 && (
+                            <img
+                                src={imageUrl1}
+                                alt="Image 1"
+                                style={{ width: '150x', height: 'auto' }} // Adjust size as needed
+                                onError={(e) => {
+                                    e.target.src = 'https://via.placeholder.com/100?text=No+Image';
+                                }}
+                            />
+                        )}
                         {formErrors.imageUrl1 && <p className="error">{formErrors.imageUrl1}</p>}
                     </div>
                     <br />
@@ -270,6 +298,16 @@ const UpdateSpotForm = () => {
                             value={imageUrl2}
                             onChange={(e) => setImageUrl2(e.target.value)}
                         />
+                        {imageUrl2 && (
+                            <img
+                                src={imageUrl2}
+                                alt="Image 2"
+                                style={{ width: '150px', height: 'auto' }} // Adjust size as needed
+                                onError={(e) => {
+                                    e.target.src = 'https://via.placeholder.com/100?text=No+Image';
+                                }}
+                            />
+                        )}
                         {formErrors.imageUrl2 && <p className="error">{formErrors.imageUrl2}</p>}
                     </div>
                     <br />
@@ -281,6 +319,16 @@ const UpdateSpotForm = () => {
                             value={imageUrl3}
                             onChange={(e) => setImageUrl3(e.target.value)}
                         />
+                        {imageUrl3 && (
+                            <img
+                                src={imageUrl3}
+                                alt="Image 3"
+                                style={{ width: '150px', height: 'auto' }} // Adjust size as needed
+                                onError={(e) => {
+                                    e.target.src = 'https://via.placeholder.com/100?text=No+Image';
+                                }}
+                            />
+                        )}
                         {formErrors.imageUrl3 && <p className="error">{formErrors.imageUrl3}</p>}
                     </div>
                     <br />
@@ -292,6 +340,16 @@ const UpdateSpotForm = () => {
                             value={imageUrl4}
                             onChange={(e) => setImageUrl4(e.target.value)}
                         />
+                        {imageUrl4 && (
+                            <img
+                                src={imageUrl4}
+                                alt="Image 4"
+                                style={{ width: '150px', height: 'auto' }} // Adjust size as needed
+                                onError={(e) => {
+                                    e.target.src = 'https://via.placeholder.com/100?text=No+Image';
+                                }}
+                            />
+                        )}
                         {formErrors.imageUrl4 && <p className="error">{formErrors.imageUrl4}</p>}
                     </div>
                     <br />

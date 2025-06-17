@@ -142,6 +142,9 @@ router.get('/:id', async (req, res, next) => {
             model: User,
             as: 'Owner',
             attributes: ['id', 'firstName', 'lastName']
+          },
+          {
+            model: SpotImage,
           }
         ]
       });
@@ -200,16 +203,13 @@ router.get('/current', requireAuth, async (req, res, next) => {
 
 
 // Add a Spot Image to an existing Spot based on Spot ID (user auth required)
-router.post('/:id/images', requireAuth, async (req, res, next) => {
+router.post('/:spotId/images', requireAuth, async (req, res, next) => {
   try {
-    const spotId = req.params.id;
+    const spotId = req.params.spotId;
     const { url, preview } = req.body;
     const spot = await Spot.findByPk(spotId);
-    if (spot !== null) {
-      const invalidSpotId = new Error("Spot couldn't be found");
-      invalidSpotId.status = 404;
-      throw invalidSpotId;
-    }
+    if (!spot) return res.status(404).json({ message: "Spot couldn't be found" });
+
     const newImage = await SpotImage.create({
       spotId: parseInt(spotId),
       url,

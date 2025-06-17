@@ -201,7 +201,8 @@ const spotsReducer = (state = initialState, action) => {
         }
 
         case CREATE_SPOT:
-        case UPDATE_SPOT:
+        case UPDATE_SPOT: {
+            const updatedSpot = action.spot;
             return {
                 ...state,
                 allSpots: {
@@ -212,7 +213,7 @@ const spotsReducer = (state = initialState, action) => {
                     [action.payload.id]: action.payload
                 }
             };
-
+        }
         case DELETE_SPOT: {
             // Wrap in {} if you declare variables
             const newState = {
