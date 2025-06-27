@@ -11,21 +11,28 @@ const LandingPage = () => {
 
     useEffect(() => {
         dispatch(getAllSpotsThunk());
-        console.log('useEffect running, about to dispatch getAllSpotsThunk');
     }, [dispatch]); // Fetch once mount
 
-    if (!Array.isArray(spots) || spots.length === 0) return <div>Loading...</div>; // handles initial state
+    if (!Array.isArray(spots) || spots.length === 0) {
+        return (
+            <div className="loading-container">
+                <div>Loading amazing places...</div>
+            </div>
+        ); // handles initial state
+    }
 
     return (
-        <div className="spot-list">
-            {spots.map(spot => (
-                spot?.id && ( // Add null check
-                    <SpotCard
-                        key={spot.id} // Key here, NOT in SpotCard
-                        spot={spot}
-                    />
-                )
-            ))}
+        <div className="landing-page">
+            <div className="spots-grid">
+                {spots.map(spot => (
+                    spot?.id && ( // Add null check
+                        <SpotCard
+                            key={spot.id} // Key here, NOT in SpotCard
+                            spot={spot}
+                        />
+                    )
+                ))}
+            </div>
         </div>
     );
 };

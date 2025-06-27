@@ -1,3 +1,15 @@
 .hidden {
     visibility: hidden;
 }
+
+.profile-dropdown {
+    position: absolute;
+    top: 100%;
+    /* just below the button */
+    right: 0;
+    z-index: 1000;
+    /* high enough to appear on top */
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    /* other styling */
+}

@@ -1,0 +1,73 @@
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+    height: 60px;
+    background: white;
+    border-bottom: 1px solid #eee;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.logo {
+    height: 40px;
+}
+
+.header-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.brand-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #f5570e;
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
+    letter-spacing: -1px;
+
+}
+
+.brand-text:hover {
+    color: #0e0707;
+}
+
+.nav-container {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 20px;
+}
+
+.create-spot-button {
+    background: #ff5a5f;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.create-spot-button:hover {
+    background: #e04448;
+}

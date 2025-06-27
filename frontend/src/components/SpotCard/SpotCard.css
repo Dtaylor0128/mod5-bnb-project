@@ -1,104 +1,142 @@
-.spot-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    padding: 2rem;
-    margin: 0 auto;
-    max-width: 1200px;
-    gap: 1.5rem;
-}
+ .spot-card {
+     display: grid;
+     grid-template-columns: repeat(3, 1fr);
+     padding: 2rem;
+     margin: 0 auto;
+     max-width: 1200px;
+     gap: 1.5rem;
+ }
 
-.manage-spot-card {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    transition: transform 0.15s;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-}
+ .manage-spot-card {
+     background: #fff;
+     border-radius: 12px;
+     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+     overflow: hidden;
+     transition: transform 0.15s;
+     cursor: pointer;
+     display: flex;
+     justify-content: center;
+     flex-direction: column;
+ }
 
-.manage-spot-card:hover {
-    transform: translateY(-4px) scale(1.03);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-}
+ .manage-spot-card:hover {
+     transform: translateY(-4px) scale(1.03);
+     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+ }
 
-.image-container {
-    width: 10%;
-    width: 20px;
-    height: 20px;
-    position: relative;
-    border-radius: 12px 12px 0 0;
-    aspect-ratio: 4/3;
-    overflow: hidden;
-    background: #eee;
-}
+ .image-container {
+     width: 100%;
+     height: 100%;
+     position: relative;
+     border-radius: 12px 12px 0 0;
+     aspect-ratio: 4/3;
+     overflow: hidden;
+     background: #eee;
+ }
 
-.spot-image {
-    width: 250px;
-    height: 250px;
-    object-fit: cover;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px 12px 0 0;
+ .spot-image {
+     width: 100%;
+     height: 100%;
+     object-fit: cover;
+     display: center;
+     align-items: center;
+     justify-content: center;
+     border-radius: 12px 12px 0 0;
 
-}
+ }
 
-.spot-info {
-    padding: 1rem;
-    flex: 1;
-}
+ .spot-info {
+     padding: 1rem;
+     flex: 1;
+ }
 
-.location-rating {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-}
+ .location-rating {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     margin-bottom: 0.5rem;
+ }
 
-.price {
-    font-weight: bold;
-    color: #E62539;
-}
+ .price {
+     font-weight: bold;
+     color: #E62539;
+ }
 
-.action-buttons {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.5rem 1rem 1rem 1rem;
-    gap: 0.5rem;
-}
+ .action-buttons {
+     display: flex;
+     justify-content: space-between;
+     padding: 0.5rem 1rem 1rem 1rem;
+     gap: 0.5rem;
+ }
 
-.update-button,
-.delete-button {
-    flex: 1;
-    padding: 0.5rem 0;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-}
+ .update-button,
+ .delete-button {
+     flex: 1;
+     padding: 0.5rem 0;
+     border: none;
+     border-radius: 6px;
+     font-weight: bold;
+     cursor: pointer;
+ }
 
-.update-button {
-    background: #333;
-    color: #fff;
-    margin-right: 0.5rem;
-}
+ .update-button {
+     background: #333;
+     color: #fff;
+     margin-right: 0.5rem;
+ }
 
-.delete-button {
-    background: #E62539;
-    color: #fff;
-}
+ .delete-button {
+     background: #E62539;
+     color: #fff;
+ }
 
-@media (max-width: 900px) {
-    .spot-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
 
-@media (max-width: 600px) {
-    .spot-grid {
-        grid-template-columns: 1fr;
-    }
-}
+
+ .spot-image:hover {
+     transform: scale(1.05);
+     /* Add zoom effect on hover */
+ }
+
+ .image-wrapper:hover .tooltip {
+     opacity: 1;
+     /* Show tooltip on hover */
+ }
+
+ .tooltip {
+     position: absolute;
+     top: 50%;
+     /* Center vertically */
+     left: 50%;
+     /* Center horizontally */
+     transform: translate(-50%, -50%);
+     /* Adjust to perfectly center */
+     background-color: #027373;
+     color: #f2f1ef;
+     padding: 8px;
+     border-radius: 4px;
+     white-space: nowrap;
+     pointer-events: none;
+     /* Prevent tooltip from interfering with hover */
+     opacity: 0;
+     /* Hide initially */
+     transition: opacity 0.2s;
+     /* Smooth fade-in effect */
+ }
+
+ .top-line {
+     display: grid;
+     grid-template-columns: 1fr 1fr;
+     margin-top: 10px;
+ }
+
+ @media (max-width: 900px) {
+     .spot-grid {
+         grid-template-columns: repeat(2, 1fr);
+     }
+ }
+
+ @media (max-width: 600px) {
+     .spot-grid {
+         grid-template-columns: 1fr;
+     }
+ }
