@@ -59,7 +59,8 @@ router.get('/', async (req, res, next) => {
           model: SpotImage,
           where: {
             preview: true
-          }
+          },
+          required: false // Add this to avoid excluding spots without preview images
         }
       ]
     });
@@ -68,16 +69,18 @@ router.get('/', async (req, res, next) => {
 
     for (let spot of spots) {
       const spotObj = await spot.toJSON();
-      //console.log(spotObj)
-      // gett the average of all the reviews per spot
+
+      // Calculate average rating
       let sum = 0;
       for (let i = 0; i < spotObj.Reviews.length; i++) {
         let review = spotObj.Reviews[i];
-        //console.log(review);
         sum += review.stars;
       }
-      const avgRating = sum / spotObj.Reviews.length;
+      const avgRating = spotObj.Reviews.length > 0 ? sum / spotObj.Reviews.length : null;
       spotObj.avgRating = avgRating;
+
+      // ADD THIS: Get review count
+      spotObj.numReviews = spotObj.Reviews.length;
 
       // Get the previewImage
       let previewImageUrl = null;
@@ -89,9 +92,8 @@ router.get('/', async (req, res, next) => {
 
       spotObj.previewImage = previewImageUrl;
       delete spotObj.SpotImages;
-      delete spotObj.Reviews
-      prettySpots.push(spotObj)
-
+      delete spotObj.Reviews; // Delete after counting
+      prettySpots.push(spotObj);
     }
 
     return res.json({ Spots: prettySpots });
@@ -99,7 +101,6 @@ router.get('/', async (req, res, next) => {
     next(e);
   }
 });
-
 
 //Create a Spot
 router.post('/', requireAuth, validateSpot, async (req, res, next) => {

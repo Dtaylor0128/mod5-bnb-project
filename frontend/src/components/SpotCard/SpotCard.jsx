@@ -15,37 +15,18 @@ const SpotCard = ({ spot = {} }) => {
     //format rating display
     const displayRating = spot.avgRating
         ? Number(spot.avgRating).toFixed(1)
-        : 'New';
+        : "New";
+
+    // Format review count 
+    const reviewCount = spot.numReviews || 0;
+    const reviewCountText = reviewCount === 1 ? "1 Review" : `${reviewCount} Reviews`;
 
     //get preview image
     const previewImage = spot.SpotImages?.find(img => img.preview)?.url || spot.previewImage;
 
-    // return (
-    //     <div
-    //         className="spot-card"
-    //         onClick={handleClick}
-    //         onMouseEnter={() => setShowTooltip(true)}
-    //         onMouseLeave={() => setShowTooltip(false)}
-    //         style={{ cursor: 'pointer' }}
-    //     >
-    //         <div className="image-wrapper">
-    //             {previewImage && <img src={previewImage} alt={spot.name} className="spot-image" />}
-    //             {showTooltip && <div className="tooltip">{spot.name}</div>}
-    //         </div>
 
-    //         <div className="spot-details">
-    //             <span className="top-line">
-    //                 <span>{spot.city}, {spot.state}</span>
-    //                 <span className="stars">
-    //                     <FaStar />
-    //                     {spot.avgRating ? spot.avgRating.toFixed(1) : 'New'}
-    //                 </span>
-    //             </span>
-    //             <p>${spot.price} / night</p>
-    //         </div>
-    //     </div>
-    // )
-
+    console.log("Spot data:", spot);
+    console.log("numReviews:", spot.numReviews);
     return (
         <div
             className="spot-card"
@@ -62,7 +43,6 @@ const SpotCard = ({ spot = {} }) => {
                         e.target.src = "https://via.placeholder.com/400x300?text=No+Image";
                     }}
                 />
-                {/* Tooltip */}
                 {showTooltip && (
                     <div className="tooltip">{spot.name}</div>
                 )}
@@ -70,15 +50,20 @@ const SpotCard = ({ spot = {} }) => {
 
             <div className="spot-details">
                 <div className="location-rating">
-                    {/* City and State */}
                     <span className="location">{spot.city}, {spot.state}</span>
-                    {/* Star Rating */}
+                    {/* Display rating with star icon */}
                     <span className="rating">
                         <FaStar className="star-icon" />
                         {displayRating}
+                        {/* Show review count if greater than 0 */}
+                        {reviewCount > 0 && (
+                            <>
+                                <span className="dot"> · </span>
+                                <span className="review-count">{reviewCountText}</span>
+                            </>
+                        )}
                     </span>
                 </div>
-                {/* Price  */}
                 <div className="price">
                     <span className="price-amount">${spot.price}</span>
                     <span className="night-label"> night</span>
@@ -86,6 +71,7 @@ const SpotCard = ({ spot = {} }) => {
             </div>
         </div>
     );
+
 }
 
 export default SpotCard

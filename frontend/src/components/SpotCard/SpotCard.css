@@ -103,31 +103,24 @@
  }
 
  .tooltip {
+
      position: absolute;
-     top: 50%;
-     /* Center vertically */
-     left: 50%;
-     /* Center horizontally */
-     transform: translate(-50%, -50%);
-     /* Adjust to perfectly center */
-     background-color: #027373;
-     color: #f2f1ef;
-     padding: 8px;
+     bottom: 8px;
+     left: 8px;
+     background: #f5570e;
+     opacity: 0.8;
+     color: white;
+     padding: 4px 8px;
      border-radius: 4px;
+     font-size: 1.1rem;
+     z-index: 10;
+     max-width: calc(100% - 16px);
+     overflow: hidden;
+     text-overflow: ellipsis;
      white-space: nowrap;
-     pointer-events: none;
-     /* Prevent tooltip from interfering with hover */
-     opacity: 0;
-     /* Hide initially */
-     transition: opacity 0.2s;
-     /* Smooth fade-in effect */
+     transform: translate(50%, -50%);
  }
 
- .top-line {
-     display: grid;
-     grid-template-columns: 1fr 1fr;
-     margin-top: 10px;
- }
 
  @media (max-width: 900px) {
      .spot-grid {
