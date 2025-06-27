@@ -23,14 +23,16 @@ const ReviewInfo = ({ spotDetails = {}, currUser, spotId }) => {
 
     // Derived values
     const hasUserReviewed = currUser && reviews.some(r => r.userId === currUser.id);
+    const isOwner = currUser && currUser.id === ownerId;
     const noReviews = reviews.length === 0;
-    const showPostReview = currUser && currUser.id !== ownerId && !hasUserReviewed;
+    const showPostReview = currUser && !isOwner && !hasUserReviewed;
 
     // format average rating 
     const displayRating = avgRating ? Number(avgRating).toFixed(1) : "New";
 
     // Format review count 
-    const reviewCountText = numReviews === 1 ? "1 Review" : `${numReviews} Reviews`;
+    const reviewCount = numReviews || reviews.length;
+    const reviewCountText = reviewCount === 1 ? "1 Review" : `${numReviews} Reviews`;
 
     return (
         <div className="reviews-section">

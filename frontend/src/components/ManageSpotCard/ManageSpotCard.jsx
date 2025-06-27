@@ -10,7 +10,7 @@ const ManageSpotCard = ({ spot }) => {
     // Fallback for missing preview image
     const previewImage = spot.previewImage || (spot.SpotImages && spot.SpotImages.length > 0
         ? spot.SpotImages.find(img => img.preview)?.url || spot.SpotImages[0].url
-        : 'https://via.placeholder.com/400x300?text=No+Image');
+        : 'ranchBnb.jpg');
 
     // Format rating for display
     const displayRating = spot.avgRating
@@ -31,7 +31,7 @@ const ManageSpotCard = ({ spot }) => {
                     src={previewImage}
                     alt={spot.name}
                     className="spot-image"
-                    onError={e => { e.target.src = 'https://via.placeholder.com/400x300?text=No+Image'; }}
+                    onError={e => { e.target.src = 'ranchBnb.jpg'; }}
                 />
             </div>
             <div className="spot-info">

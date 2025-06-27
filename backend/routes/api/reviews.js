@@ -167,7 +167,6 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
       return res.status(404).json({
         message: "Review not found",
 
-        status: 404
       });
     }
 
@@ -175,9 +174,7 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
     if (review.userId !== userId) {
       return res.status(403).json({
         message: "Forbidden",
-        title: "Authorization required",
         errors: { message: "You don't have permission to delete this review" },
-        status: 403
       });
     }
 
@@ -191,9 +188,6 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
     console.error("DELETE review error:", error);
     res.status(500).json({
       message: "Internal server error",
-      title: "Server Error",
-      errors: { message: "Something went wrong" },
-      status: 500
     });
   }
 });

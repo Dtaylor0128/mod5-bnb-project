@@ -125,13 +125,15 @@ export const createNewSpotThunk = (spot) => async (dispatch) => {
         return newSpot;
     }
 };
-export const updateSpotThunk = (spot) => async (dispatch) => {
+// Update a spot with spot data
+// spotData should include all necessary fields for the update
+export const updateSpotThunk = (spot, spotData) => async (dispatch) => {
     const response = await csrfFetch(`/api/spots/${spot.id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(spot)
+        body: JSON.stringify(spotData)
     });
     if (response.ok) {
         const updatedSpot = await response.json();

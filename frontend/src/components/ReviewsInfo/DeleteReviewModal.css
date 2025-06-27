@@ -1,0 +1,68 @@
+.delete-modal {
+    background: #fdfdfd;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    border-radius: 8px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.delete-modal h1 {
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    text-align: center;
+    color: #222;
+}
+
+.delete-modal p {
+    margin-bottom: 1.5rem;
+    color: #312c2c;
+}
+
+.delete-warning {
+    color: #d11a2a;
+    font-size: 0.95rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    padding: 4px;
+    background: #ffeaea;
+    border-radius: 4px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    gap: 10px;
+}
+
+.delete-button,
+.keep-button {
+    color: tomato;
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+
+}
+
+.delete-button {
+    background: #e62539;
+    color: white;
+}
+
+.delete-button:hover {
+    background: #cc1f2f;
+}
+
+.keep-button {
+    background: #333;
+    color: white;
+}
+
+.keep-button:hover {
+    background: #555;
+}

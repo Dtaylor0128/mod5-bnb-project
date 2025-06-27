@@ -79,7 +79,7 @@ router.get('/', async (req, res, next) => {
       const avgRating = spotObj.Reviews.length > 0 ? sum / spotObj.Reviews.length : null;
       spotObj.avgRating = avgRating;
 
-      // ADD THIS: Get review count
+      // Get review count
       spotObj.numReviews = spotObj.Reviews.length;
 
       // Get the previewImage
