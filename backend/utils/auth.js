@@ -14,7 +14,7 @@ const setTokenCookie = (res, user) => {
   };
   const token = jwt.sign(
     { data: safeUser },
-    secret,
+    process.env.JWT_SECRET || secret,
     { expiresIn: parseInt(expiresIn) } // 604,800 seconds = 1 week
   );
 
@@ -29,6 +29,7 @@ const setTokenCookie = (res, user) => {
 
   return token;
 };
+//console.log("JWT Secret:", secret, process.env.JWT_SECRET);
 
 // Remember Me when returning to website 
 const restoreUser = (req, res, next) => {

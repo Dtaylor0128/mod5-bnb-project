@@ -17,7 +17,7 @@ const helmet = require('helmet');
 //--Utility Imports--
 const cookieParser = require('cookie-parser');
 const { environment } = require('./config');
-const { ValidationError } = require('sequelize');
+const { ValidationError, json } = require('sequelize');
 const sequelize = require('./config/database'); // Import the database configuration
 
 const isProduction = environment === 'production';
@@ -52,9 +52,11 @@ app.use(
   })
 );
 
+
 //----------------Middle ware must be used above this line-------
 // --Routes--
 app.use(routes); // Connect all the routes
+
 
 // -----ERROR HANDLING----
 
@@ -85,12 +87,39 @@ app.use((err, _req, _res, next) => {
 app.use((err, _req, res, _next) => {
   res.status(err.status || 500);
   console.error(err);
-  res.json({
-    // title: err.title || 'Server Error',
-    message: err.message,
-    errors: err.errors,
-    // stack: isProduction ? null : err.stack
-  });
+  if (isProduction) {
+    // in production, don't include the stack trace
+    res, json({
+      title: err.title || 'Server Error',
+      message: err.message,
+      errors: err.errors,
+    });
+  } else {
+    // in development, include the stack trace
+    res.json({
+      title: err.title || 'Server Error',
+      message: err.message,
+      status: err.status,
+      errors: err.errors,
+      stack: err.stack
+    });
+  }
+});//print all errors to the console
+app.use((err, req, res, next) => {
+  console.error(err); // This should print all errors
+  res.status(err.status || 500).json({ message: err.message });
 });
 
+
 module.exports = app;
+/* Central config file for expreess app resposible for Middlewares, Routes, and Error Handling(se
+curity, parsing, etc.), error handling, and database connection.
+
+remember this file is the entry point for the backend server
+and it is where the express app is created and configured.
+It sets up the middlewares, routes, and error handling for the application.
+It also imports the database configuration and connects to the database.
+The app is exported at the end of the file so it can be used in other files, such as the server.js file.
+This file is essential for the backend server to function properly.
+It is the main file that runs when the backend server is started.
+The app listens on the port specified in the environment variable PORT or 5000 by default.*/

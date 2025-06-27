@@ -142,6 +142,9 @@ router.get('/:id', async (req, res, next) => {
             model: User,
             as: 'Owner',
             attributes: ['id', 'firstName', 'lastName']
+          },
+          {
+            model: SpotImage,
           }
         ]
       });
@@ -200,16 +203,13 @@ router.get('/current', requireAuth, async (req, res, next) => {
 
 
 // Add a Spot Image to an existing Spot based on Spot ID (user auth required)
-router.post('/:id/images', requireAuth, async (req, res, next) => {
+router.post('/:spotId/images', requireAuth, async (req, res, next) => {
   try {
-    const spotId = req.params.id;
+    const spotId = req.params.spotId;
     const { url, preview } = req.body;
     const spot = await Spot.findByPk(spotId);
-    if (spot !== null) {
-      const invalidSpotId = new Error("Spot couldn't be found");
-      invalidSpotId.status = 404;
-      throw invalidSpotId;
-    }
+    if (!spot) return res.status(404).json({ message: "Spot couldn't be found" });
+
     const newImage = await SpotImage.create({
       spotId: parseInt(spotId),
       url,
@@ -311,10 +311,11 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res, ne
       throw noResourceError;
     }
 
-    // If it does exist -> See if the current user made a review already]
+    // If it does exist -> See if the current user made a review @ spot already ]
     const userReview = await Review.findOne({
       where: {
-        userId: userId
+        userId: userId,
+        spotId: spotId
       }
     });
 
@@ -327,7 +328,7 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res, ne
     } else {
       // TODO: Edit this error message and status code based on api docs
       let alreadyReviewedError = new Error("User already has a review for this spot");
-      alreadyReviewedError.status = 500;
+      alreadyReviewedError.status = 403;
       throw alreadyReviewedError;
     }
 

@@ -31,21 +31,33 @@ router.use('/bookings', bookingsRouter);
 router.use('/spot-images', spotImagesRouter);
 router.use('/review-images', reviewImagesRouter);
 
+
 // --Routes--
 router.post('/test', function (req, res) {
   res.json({ requestBody: req.body });
 });
+// restore CSRF token
+router.get('/csrf/restore', (req, res) => {
+  res.cookie('XSRF-TOKEN', req.csrfToken());
+  return res.json({ 'XSRF-Token': req.csrfToken() });
+});
+
+// router.get('/csrf/restore', (req, res) => {
+//   res.json({csrfToken: req.csrfToken()});
+// }
+// );
 
 // Add a XSRF-TOKEN cookie
-router.get('/set-token-cookie', async (_req, res) => {
-  const user = await User.findOne({
-    where: {
-      username: 'Demo-lition'
-    }
-  });
-  setTokenCookie(res, user);
-  return res.json({ user: user });
-});
+// router.get('/set-token-cookie', async (_req, res) => {
+//   const user = await User.findOne({
+//     where: {
+//       username: 'Demo-lition'
+//     }
+//   });
+//   setTokenCookie(res, user);
+//   return res.json({ user: user });
+// });
+
 
 // Restores the User who previously logged in
 router.get('/restore-user', (req, res) => {
@@ -59,8 +71,8 @@ router.get('/require-auth', requireAuth, (req, res) => {
 }
 );
 // Keep this route to test frontend setup in Mod 5
-router.post('/test', function (req, res) {
-  res.json({ requestBody: req.body });
-});
+// router.post('/test', function (req, res) {
+//   res.json({ requestBody: req.body });
+// });
 
 module.exports = router;

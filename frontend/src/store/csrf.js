@@ -5,6 +5,7 @@ export async function csrfFetch(url, options = {}) {
     options.method = options.method || 'GET';
     // set options.headers to an empty object if there is no headers
     options.headers = options.headers || {};
+    options.credientials = 'include'; // include cookies in the request
 
     // if the options.method is not 'GET', then set the "Content-Type" header to
     // "application/json", and set the "XSRF-TOKEN" header to the value of the
@@ -27,9 +28,9 @@ export async function csrfFetch(url, options = {}) {
         // if the response status code is under 400, then return the response to the
         // next promise chain
         return res;
-    } catch (err) {
-        console.err('Error in CSRFFetch', error);
-        throw error;
+    } catch (e) {
+        console.error('Error in CSRFFetch', e);
+        throw e;
     }
 }
 

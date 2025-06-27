@@ -12,8 +12,8 @@ const { handleValidationErrors } = require('../../utils/validation');
 // TODO: Do this validation
 const validateReview = [
   check('review')
-  .exists({ checkFalsy: true })
-  .withMessage('Review text is required'),
+    .exists({ checkFalsy: true })
+    .withMessage('Review text is required'),
   check('stars')
     .exists({ checkFalsy: true })
     .isInt({ min: 1, max: 5 })
@@ -22,8 +22,8 @@ const validateReview = [
 ];
 
 // Add a Review Image to an existing Review based on Review Id (user auth required)
-router.post('/:id/images',requireAuth, async (req, res, next) => {
-  try{
+router.post('/:id/images', requireAuth, async (req, res, next) => {
+  try {
     // TODO: Do this route
 
     const { reviewId } = req.params;
@@ -154,37 +154,49 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res, next) => 
 });
 
 // Route to delete an existing review
-router.delete('/:reviewId', requireAuth, async (req, res, next) => {
+router.delete('/:reviewId', requireAuth, async (req, res) => {
   try {
     const { reviewId } = req.params;
     const userId = req.user.id;
 
-    // Find a review before trying to update it
+    console.log(`Attempting to delete review ${reviewId} by user ${userId}`);
+
+    // Find the review by its ID
     const review = await Review.findByPk(reviewId);
+    if (!review) {
+      return res.status(404).json({
+        message: "Review not found",
 
-    if (!existingReview) {
-      // TODO: Error handling
-      let noExistingReviewError = new Error("Review couldn't be found");
-      noExistingReviewError.status = 404;
-      throw noExistingReviewError;
+        status: 404
+      });
     }
 
-    if (existingReview.userId !== userId) {
-      // TODO: Error handling
-      let notUserReviewError = new Error("Forbidden: This is not your review");
-      notUserReviewError.status = 403;
-      throw notUserReviewError;
+    // Check if the review belongs to the current user
+    if (review.userId !== userId) {
+      return res.status(403).json({
+        message: "Forbidden",
+        title: "Authorization required",
+        errors: { message: "You don't have permission to delete this review" },
+        status: 403
+      });
     }
 
-    // Deletes a review
+    // If the review exists and belongs to the user, delete it
     await review.destroy();
+    res.status(200).json({
+      message: "Review deleted successfully"
+    });
 
-    // TODO: Add a status MEssage
-    //return res.json({ message: 'Successfully deleted' });
-    return res.json(review);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    console.error("DELETE review error:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      title: "Server Error",
+      errors: { message: "Something went wrong" },
+      status: 500
+    });
   }
 });
+
 
 module.exports = router;

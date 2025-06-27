@@ -1,0 +1,95 @@
+/* .manage-spot-card {
+    width: 300px;
+    margin: 15px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    background: white;
+}
+
+.manage-spot-card:hover {
+    transform: translateY(-5px);
+}
+
+.image-container {
+    position: relative;
+    height: 20px;
+    background: #f0f0f0;
+}
+
+.spot-image {
+    width: 10%;
+    height: 10%;
+    object-fit: cover;
+
+}
+
+.image-tooltip {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.spot-info {
+    padding: 15px;
+}
+
+.location-rating {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.price {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.night {
+    font-weight: 400;
+    color: #666;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    border-top: 1px solid #eee;
+}
+
+.update-button,
+.delete-button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.update-button {
+    background: #007bff;
+    color: white;
+}
+
+.delete-button {
+    background: #dc3545;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.9;
+} */

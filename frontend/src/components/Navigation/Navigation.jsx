@@ -1,22 +1,37 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
 import './Navigation.css';
 
 function Navigation({ isLoaded }) {
-    const sessionUser = useSelector(state => state.session.user);
+    const navigate = useNavigate();
+    const sessionUser = useSelector(state => state.session.user); //auth state
 
     return (
-        <ul>
+        <ul className="nav-container">
             <li>
                 <NavLink to="/">Home</NavLink>
             </li>
-            {isLoaded && (
+
+
+            {isLoaded && sessionUser && (
                 <li>
-                    <ProfileButton user={sessionUser} />
+                    <button
+                        onClick={() => navigate('/spots/new')}
+                        className="create-spot-button"
+                    >
+                        Create a Spot
+                    </button>
                 </li>
             )}
-        </ul>
+
+            <li>
+
+                <ProfileButton user={sessionUser} />
+            </li>
+
+
+        </ul >
     );
 }
 

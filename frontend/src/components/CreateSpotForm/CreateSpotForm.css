@@ -1,0 +1,69 @@
+.long-forms {
+    width: 500px;
+}
+
+.form-section {
+    width: 100%;
+}
+
+.location {
+    display: grid;
+    grid-template-columns: 1fr 1px 1px 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+        "label label label",
+    ;
+    gap: 5px;
+}
+
+input,
+textarea {
+    display: block;
+    margin: 0;
+    text-align: left;
+    width: 95%;
+
+    color: #253659;
+
+}
+
+textarea::placeholder {
+    opacity: 0.5;
+    color: grey;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+}
+
+input::placeholder {
+    opacity: 0.5;
+    color: grey;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+}
+
+textarea {
+    height: 75px;
+}
+
+.cityInput {
+    display: block;
+    margin: 0;
+    text-align: left;
+    width: 250px;
+}
+
+.stateInput {
+    display: block;
+    margin: 0;
+    text-align: left;
+    width: 190px;
+}
+
+.price {
+    display: inline-flex;
+    gap: 2px;
+    width: 97%;
+    align-items: center;
+}
