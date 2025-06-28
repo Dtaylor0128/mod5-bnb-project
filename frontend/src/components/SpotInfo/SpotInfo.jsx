@@ -15,8 +15,8 @@ const SpotInfo = ({ spotDetails = {} }) => {
         state = ""
     } = spotDetails;
 
-    const displayRating = avgStarRating ? avgStarRating.toFixed(1) : "New";
-    const reviewCountText = numReviews === 1 ? "1 Review" : `${numReviews} Reviews`;
+    // const displayRating = avgStarRating ? avgStarRating.toFixed(1) : "New";
+    // const reviewCountText = numReviews === 1 ? "1 Review" : `${numReviews} Reviews`;
 
     const previewImage = spotDetails?.SpotImages?.find(img => img.preview)?.url || spotDetails?.previewImage;
     const nonPreviewImages = SpotImages.filter(img => !img.preview);

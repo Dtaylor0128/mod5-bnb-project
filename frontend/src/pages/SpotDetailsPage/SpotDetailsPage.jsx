@@ -14,7 +14,7 @@ const SpotDetailsPage = () => {
     const { spotId } = useParams();
     const dispatch = useDispatch();
     const [isLoaded, setIsLoaded] = useState(false);
-    // const [hasInitialized, setHasInitialized] = useState(false);
+    // Get the spot details and reviews from the Redux store
 
     const spot = useSelector(state => state.spots.allSpots?.[spotId]);
     const reviews = useSelector(state => {
@@ -25,13 +25,6 @@ const SpotDetailsPage = () => {
 
 
     // only run on mount or when spotId changes
-    // useEffect(() => {
-    //     console.log(' SpotDetailsPage useEffect triggered', { spotId, timestamp: Date.now() });
-    //     setIsLoaded(false);
-    //     dispatch(getSpotThunk(spotId))
-    //         .then(() => dispatch(getReviewsThunk(spotId)))
-    //         .then(() => setIsLoaded(true));
-    // }, [dispatch, spotId]);
 
     useEffect(() => {
         const loadSpotData = async () => {
@@ -48,19 +41,6 @@ const SpotDetailsPage = () => {
 
         loadSpotData();
     }, [dispatch, spotId]);
-
-    // useEffect(() => {
-    //     if (!hasInitialized || spotId !== hasInitialized) {
-    //         console.log('SpotDetailsPage initial load for spotId:', spotId);
-    //         setIsLoaded(false);
-    //         dispatch(getSpotThunk(spotId))
-    //             .then(() => dispatch(getReviewsThunk(spotId)))
-    //             .then(() => {
-    //                 setIsLoaded(true);
-    //                 setHasInitialized(spotId); // Mark as initialized for this spotId
-    //             });
-    //     }
-    // }, [dispatch, spotId]);
 
     if (!isLoaded || !spot) return <h3>Loading spot details...</h3>;
 

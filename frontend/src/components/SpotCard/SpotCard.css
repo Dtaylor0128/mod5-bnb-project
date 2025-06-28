@@ -1,135 +1,110 @@
- .spot-card {
-     display: grid;
-     grid-template-columns: repeat(3, 1fr);
-     padding: 2rem;
-     margin: 0 auto;
-     max-width: 1200px;
-     gap: 1.5rem;
- }
+.spot-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: transform 0.15s;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
 
- .manage-spot-card {
-     background: #fff;
-     border-radius: 12px;
-     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-     overflow: hidden;
-     transition: transform 0.15s;
-     cursor: pointer;
-     display: flex;
-     justify-content: center;
-     flex-direction: column;
- }
+.spot-card:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
 
- .manage-spot-card:hover {
-     transform: translateY(-4px) scale(1.03);
-     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
- }
+.image-container {
+    width: 100%;
+    height: 200px;
+    position: relative;
+    border-radius: 12px 12px 0 0;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: #eee;
+}
 
- .image-container {
-     width: 100%;
-     height: 100%;
-     position: relative;
-     border-radius: 12px 12px 0 0;
-     aspect-ratio: 4/3;
-     overflow: hidden;
-     background: #eee;
- }
+.spot-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
- .spot-image {
-     width: 100%;
-     height: 100%;
-     object-fit: cover;
-     display: center;
-     align-items: center;
-     justify-content: center;
-     border-radius: 12px 12px 0 0;
+.spot-image:hover {
+    transform: scale(1.05);
+    /* Add zoom effect on hover */
+}
 
- }
+.spot-details {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0.5rem;
+}
 
- .spot-info {
-     padding: 1rem;
-     flex: 1;
- }
+.location-rating {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
 
- .location-rating {
-     display: flex;
-     justify-content: space-between;
-     align-items: center;
-     margin-bottom: 0.5rem;
- }
+.location {
+    font-weight: 600;
+    color: #222;
+    font-size: 0.95rem;
+}
 
- .price {
-     font-weight: bold;
-     color: #E62539;
- }
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
 
- .action-buttons {
-     display: flex;
-     justify-content: space-between;
-     padding: 0.5rem 1rem 1rem 1rem;
-     gap: 0.5rem;
- }
+.star-icon {
+    color: #ff5a5f;
+    font-size: 0.8rem;
+}
 
- .update-button,
- .delete-button {
-     flex: 1;
-     padding: 0.5rem 0;
-     border: none;
-     border-radius: 6px;
-     font-weight: bold;
-     cursor: pointer;
- }
+.price {
+    font-weight: bold;
+    color: #E62539;
+}
 
- .update-button {
-     background: #333;
-     color: #fff;
-     margin-right: 0.5rem;
- }
+.price-amount {
+    font-weight: 600;
+}
 
- .delete-button {
-     background: #E62539;
-     color: #fff;
- }
+.night-label {
+    font-weight: bold;
+    color: #110e0e;
+}
 
 
+.image-wrapper:hover .tooltip {
+    opacity: 1;
+    /* Show tooltip on hover */
+}
 
- .spot-image:hover {
-     transform: scale(1.05);
-     /* Add zoom effect on hover */
- }
+.tooltip {
 
- .image-wrapper:hover .tooltip {
-     opacity: 1;
-     /* Show tooltip on hover */
- }
-
- .tooltip {
-
-     position: absolute;
-     bottom: 8px;
-     left: 8px;
-     background: #f5570e;
-     opacity: 0.8;
-     color: white;
-     padding: 4px 8px;
-     border-radius: 4px;
-     font-size: 1.1rem;
-     z-index: 10;
-     max-width: calc(100% - 16px);
-     overflow: hidden;
-     text-overflow: ellipsis;
-     white-space: nowrap;
-     transform: translate(50%, -50%);
- }
-
-
- @media (max-width: 900px) {
-     .spot-grid {
-         grid-template-columns: repeat(2, 1fr);
-     }
- }
-
- @media (max-width: 600px) {
-     .spot-grid {
-         grid-template-columns: 1fr;
-     }
- }
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background: #f5570e;
+    opacity: 0.8;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    z-index: 10;
+    /* max-width: calc(100% - 16px); */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transform: translate(50%, -50%);
+}

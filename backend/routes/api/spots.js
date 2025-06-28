@@ -7,36 +7,39 @@ const { handleValidationErrors } = require('../../utils/validation');
 const { Spot, User, SpotImage, Booking, Review, ReviewImage } = require('../../db/models');
 
 
-// Validate Spots
+// Validate Spots bail prevents multiple errors within fields
 const validateSpot = [
   check('address')
-    .exists({ checkFalsy: true })
+    .exists({ checkFalsy: true }).bail()
     .notEmpty()
     .withMessage('Street address is required'),
   check('city')
-    .exists({ checkFalsy: true })
+    .exists({ checkFalsy: true }).bail()
     .withMessage('City is required.'),
   check('state')
-    .exists({ checkFalsy: true })
+    .exists({ checkFalsy: true }).bail()
     .withMessage('State is required.'),
   check('country')
-    .exists({ checkFalsy: true })
+    .exists({ checkFalsy: true }).bail()
     .withMessage('Country is required.'),
   check('lat')
-    .exists({ checkFalsy: true })
-    .withMessage('Latitud must be within -90 and 90.'),
+    .exists({ checkFalsy: true }).bail()
+    .isFloat({ min: -90, max: 90 })
+    .withMessage('Latitude must be within -90 and 90.'),
   check('lng')
-    .exists({ checkFalsy: true })
+    .exists({ checkFalsy: true }).bail()
+    .isFloat({ min: -180, max: 180 })
     .withMessage('Longitude must be within -180 and 180.'),
   check('name')
-    .exists({ checkFalsy: true })
+    .exists({ checkFalsy: true }).bail()
     .isLength({ max: 50 })
     .withMessage('Name must be less than 50 characters.'),
   check('description')
-    .exists({ checkFalsy: true })
+    .exists({ checkFalsy: true }).bail()
     .withMessage('Description is required.'),
   check('price')
-    .exists({ checkFalsy: true })
+    .exists({ checkFalsy: true }).bail()
+    .isFloat({ min: 1 })// ensure positive value
     .withMessage('Price per day must be a positive number.'),
   handleValidationErrors
 ];
@@ -258,6 +261,14 @@ router.put('/:id', requireAuth, validateSpot, async (req, res, next) => {
 
     return res.status(200).json(existingSpot);
   } catch (error) {
+    if (error.name === 'SequelizeValidationError') {
+      const errors = {};
+      error.errors.forEach(err => {
+        errors[err.path] = err.message;
+      });
+      return res.status(400).json({ errors });
+      // This will return a 400 Bad Request with validation errors
+    }
     next(error);
   }
 });

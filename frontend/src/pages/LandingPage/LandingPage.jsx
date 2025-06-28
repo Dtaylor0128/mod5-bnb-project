@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllSpotsThunk } from "../../store/spots";
 import { selectAllSpots } from "../../store/spots";
 import SpotCard from "../../components/SpotCard/SpotCard"; // Assuming this is the correct path to your SpotCard component
+import "./LandingPage.css"; // Assuming you have a CSS file for styling
 
 const LandingPage = () => {
     const dispatch = useDispatch();
