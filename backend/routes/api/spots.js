@@ -228,6 +228,7 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
 // Edit a spot
 // Complete route /api/spots/:spotId
 router.put('/:id', requireAuth, validateSpot, async (req, res, next) => {
+  console.log("REQ BODY:", req.body);
   try {
     const { id } = req.params;
     const userId = req.user.id;

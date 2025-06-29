@@ -64,30 +64,6 @@ export const getAllSpotsThunk = () => async (dispatch) => {
         return normalized;
     }
 };
-// export const getAllSpotsThunk = () => async (dispatch) => {
-//     const response = await csrfFetch('/api/spots');
-//     if (response.ok) {
-//         const data = await response.json();
-//         const normalized = data.Spots.reduce((result, spot) => {
-//             result[spot.id] = spot;
-//             return result;
-//         }, {});
-//         dispatch(getAllSpots(normalized));
-//         return normalized;
-//     }
-// };
-
-// export const getAllSpotsThunk = () => async (dispatch) => {
-//     const response = await csrfFetch('/api/spots'); // 👈 Use csrfFetch
-//     if (response.ok) {
-//         const data = await response.json();
-//         const normalized = data.Spots.reduce((acc, spot) => {
-//             acc[spot.id] = spot;
-//             return acc;
-//         }, {});
-//         dispatch(getAllSpots(normalized));
-//     }
-// };
 
 
 export const getSpotThunk = (spotId) => async (dispatch) => {
@@ -103,14 +79,7 @@ export const getSpotThunk = (spotId) => async (dispatch) => {
     }
 };
 
-// export const getSpotThunk = (spotId) => async (dispatch) => {
-//     const response = await csrfFetch(`/api/spots/${spotId}`);
-//     if (response.ok) {
-//         const spot = await response.json();
-//         dispatch(getSpot(spot));
-//         return spot;
-//     }
-//};
+
 export const createNewSpotThunk = (spot) => async (dispatch) => {
     const response = await csrfFetch('/api/spots', {
         method: 'POST',
@@ -127,8 +96,8 @@ export const createNewSpotThunk = (spot) => async (dispatch) => {
 };
 // Update a spot with spot data
 // spotData should include all necessary fields for the update
-export const updateSpotThunk = (spot, spotData) => async (dispatch) => {
-    const response = await csrfFetch(`/api/spots/${spot.id}`, {
+export const updateSpotThunk = (spotData) => async (dispatch) => {
+    const response = await csrfFetch(`/api/spots/${spotData.id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -166,16 +135,6 @@ const initialState = {
     singleSpot: {}
 };
 
-// const spotsReducer = (state = initialState, action) => {
-//     switch (action.type) {
-//         case GET_ALL_SPOTS:
-//             const normalizedSpots = action.payload.reduce((acc, spot) => {
-//                 acc[spot.id] = spot;
-//                 return acc;
-//             }, {});
-//             return { ...state, allSpots: normalizedSpots };
-
-// spotsSlice should take an array of spots and transform them into objects using accumulator0.2
 
 // Reducer 
 const spotsReducer = (state = initialState, action) => {
@@ -233,63 +192,7 @@ const spotsReducer = (state = initialState, action) => {
             return state;
     }
 };
-// const spotsReducer = (state = initialState, action) => {
-//     switch (action.type) {
-//         case GET_ALL_SPOTS:
-//             return {
-//                 ...state,
-//                 allSpots: action.payload // normalized in thunk
-//             };
-//         // return {
-//         //     ...state,
-//         //     allSpots: action.payload.Spots.reduce((acc, spot) => {
-//         //         acc[spot.id] = spot; // Normalize spots by ID
-//         //         return acc;
-//         //     }, {})
-//         // };
 
-//         case GET_SPOT: {
-//             const { id, SpotImages = [], ...spotData } = action.payload;
-//             return {
-//                 ...state,
-//                 allSpots: {
-//                     ...state.allSpots,
-//                     [id]: {
-//                         ...state.allSpots[id],
-//                         ...spotData,
-//                         SpotImages
-//                     }
-//                 },
-//                 singleSpot: action.payload
-//             };
-//         }
-//         case CREATE_SPOT:
-//         case UPDATE_SPOT:
-//             return {
-//                 ...state,
-//                 allSpots: {
-//                     ...state.allSpots,
-//                     [action.payload.id]: action.payload
-//                 },
-//                 singleSpot: {
-//                     [action.payload.id]: action.payload
-//                 }
-//             };
-
-
-//         case DELETE_SPOT:
-//             const newState = {
-//                 ...state,
-//                 allSpots: { ...state.allSpots },
-//                 singleSpot: {}
-//             };
-//             delete newState.allSpots[action.payload];
-//             return newState;
-
-//         default:
-//             return state;
-//     }
-// };
 
 export default spotsReducer;
 
@@ -299,19 +202,7 @@ createSelector memoizes the result ->
 Stable Reference: Returns same array reference if allSpots doesn't change
 Empty Handling: Safely handles undefined allSpots
 */
-// export const selectAllSpots = createSelector(
-//     state => state.spots.allSpots,
-//     allSpots => Object.values(allSpots || [])
-// );
 
-// export const selectAllSpots = createSelector(
-//     [state => state.spots?.allSpots || {}], // Stable input
-//     (allSpots) => {
-//         const spotsArray = Object.values(allSpots);
-//         // Filter out any invalid spots
-//         return spotsArray.filter(spot => spot && spot.id);
-//     }
-// );
 
 export const selectAllSpots = createSelector(
     [state => state.spots?.allSpots || {}],
