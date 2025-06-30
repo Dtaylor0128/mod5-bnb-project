@@ -148,5 +148,8 @@ bySpotId: { [spotId]: { [reviewId]: { ...reviewData } } }
 ## **Contact**
 Questions? Reach out at [dtaylor0128@gmail.com](mailto:dtaylor0128@gmail.com)
 
+
+--
+side note The Ai technolgy known as co-pilot was used to help with debug and identify syntax errors processing
 ![Logo](frontend/public/ranchBNB-letters.png)
 ---
