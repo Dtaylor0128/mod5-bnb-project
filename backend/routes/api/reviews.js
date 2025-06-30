@@ -155,23 +155,19 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res, next) => 
 
 // Route to delete an existing review
 router.delete('/:reviewId', requireAuth, async (req, res) => {
-  console.log("DELETE review route hit");
+
   try {
     const { reviewId } = req.params;
     const userId = req.user.id;
 
-    console.log(`Attempting to delete review ${reviewId} by user ${userId}`);
-
     // // Find the review by its ID
     const review = await Review.findByPk(reviewId);
-    console.log("Found review:", review);
     if (!review) {
       return res.status(404).json({
         message: "Review not found",
 
       });
     }
-
     // // Check if the review belongs to the current user
     // if (review.userId !== userId) {
     //   return res.status(403).json({
@@ -179,13 +175,10 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
     //     errors: { message: "You don't have permission to delete this review" },
     //   });
     // }
-
     // // If the review exists and belongs to the user, delete it
     if (review) {
-      console.log("Deleting review:", review);
       // Use the destroy method to delete the review
       const reviewDestroy = await review.destroy();
-      //console.log("Review deleted:", reviewDestroy);
 
       // if (reviewDestroy) {
       res.status(200).json({

@@ -10,7 +10,6 @@ const SpotCard = ({ spot = {} }) => {
         navigate(`/spots/${spot.id}`);
     };
 
-    //console.log(`Spot ID: ${spot.id}, Avg Rating: ${spot.avgRating}`);
 
     //format rating display
     const displayRating = spot.avgRating
@@ -24,9 +23,6 @@ const SpotCard = ({ spot = {} }) => {
     //get preview image
     const previewImage = spot.SpotImages?.find(img => img.preview)?.url || spot.previewImage;
 
-
-    console.log("Spot data:", spot);
-    console.log("numReviews:", spot.numReviews);
     return (
         <div
             className="spot-card"

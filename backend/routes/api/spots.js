@@ -109,7 +109,6 @@ router.get('/', async (req, res, next) => {
 router.post('/', requireAuth, validateSpot, async (req, res, next) => {
   try {
     const { address, city, state, country, lat, lng, name, description, price } = req.body
-    //console.log(address, city, state, country, lat, lng, name, description, price)
 
     const newSpot = await Spot.create({
       ownerId: req.user.id,
@@ -228,7 +227,7 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
 // Edit a spot
 // Complete route /api/spots/:spotId
 router.put('/:id', requireAuth, validateSpot, async (req, res, next) => {
-  console.log("REQ BODY:", req.body);
+
   try {
     const { id } = req.params;
     const userId = req.user.id;
@@ -277,31 +276,61 @@ router.put('/:id', requireAuth, validateSpot, async (req, res, next) => {
 
 
 // Delete a spot
+// router.delete('/:spotId', requireAuth, async (req, res, next) => {
+//   try {
+//     const { spotId } = req.params;
+//     const userId = req.user.id;
+//     const spot = await Spot.findByPk(spotId);
+
+//     if (!spot) {
+//       const err = new Error("Spot couldn't be found");
+//       err.status = 404;
+//       throw err;
+//     }
+
+//     if (spot.ownerId !== userId) {
+//       const err = new Error('Forbidden');
+//       err.status = 403;
+//       throw err;
+//     }
+
+//     await spot.destroy();
+//     return res.json({ message: "Successfully deleted" });
+//   } catch (e) {
+//     next(e);
+//   }
+// });
 router.delete('/:spotId', requireAuth, async (req, res, next) => {
   try {
     const { spotId } = req.params;
     const userId = req.user.id;
-    const spot = await Spot.findByPk(spotId);
+
+    const spot = await Spot.findByPk(spotId, {
+      include: [Booking, Review, SpotImage]
+    });
 
     if (!spot) {
-      const err = new Error("Spot couldn't be found");
-      err.status = 404;
-      throw err;
+      return res.status(404).json({ message: "Spot couldn't be found" });
     }
 
     if (spot.ownerId !== userId) {
-      const err = new Error('Forbidden');
-      err.status = 403;
-      throw err;
+      return res.status(403).json({ message: "Forbidden" });
     }
 
+    // Delete associated data
+    await Booking.destroy({ where: { spotId } });
+    await Review.destroy({ where: { spotId } });
+    await SpotImage.destroy({ where: { spotId } });
+
+    // Delete spot
     await spot.destroy();
-    return res.json({ message: "Successfully deleted" });
-  } catch (e) {
-    next(e);
+
+    return res.status(200).json({ message: "Successfully deleted" });
+  } catch (error) {
+    console.error("Delete spot error:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
-
 
 
 // Creating a Review based on a spot id
@@ -388,7 +417,7 @@ router.get('/:id/reviews', async (req, res, next) => {
     return res.json({ Reviews: reviews });
     // return res.json({Reviews: prettyReviews});
   } catch (error) {
-    //console.log("starting point")
+
     next(error);
   }
 })
@@ -406,7 +435,7 @@ module.exports = router;
 // for(let review of reviews){
 //   // Method to turn ugly sequelize objects into pretty javascript objrects
 //   const prettyReview = await review.toJSON();
-//   // console.log("This is one singular review", prettyReview)
+//   // ("This is one singular review", prettyReview)
 //   // Grab the id from the prettyReview object and use it to get the User associated to that id
 //   let userId = prettyReview.userId;
 //   const userObj = await User.findByPk(userId);

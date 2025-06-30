@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { updateSpotThunk, getSpotThunk } from "../../store/spots";
 import { createSpotImageThunk, deleteSpotImageThunk } from "../../store/images";
+import "./UpdateSpotPage.css";
 
 
 const UpdateSpotForm = () => {

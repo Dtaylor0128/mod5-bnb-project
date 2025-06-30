@@ -40,8 +40,19 @@ export const deleteSpotImageThunk = (imageId) => async (dispatch) => {
     });
 
     if (response.ok) {
-        dispatch(deleteSpotImage(imageId));
+        const { deletedImage } = await response.json();
+        dispatch(deleteSpotImage({
+            imageId,
+            spotId: deletedImage.spotId // Critical for reducer
+        }));
         return true;
+        // const response = await csrfFetch(`/api/spot-images/${imageId}`, {
+        //     method: 'DELETE',
+        // });
+
+        // if (response.ok) {
+        //     dispatch(deleteSpotImage(imageId));
+        //     return true;
     } else {
         const errorData = await response.json();
         console.error('Delete image failed:', errorData);
@@ -75,22 +86,48 @@ const spotImageReducer = (state = initialState, action) => {
         }
         case DELETE_SPOT_IMAGE:
             newState = { ...state };
-            // Remove image from allSpots
+
+            // 1. Remove from allSpots
             Object.keys(newState.allSpots).forEach(spotId => {
-                if (newState.allSpots[spotId]?.SpotImages) {
-                    newState.allSpots[spotId].SpotImages =
-                        newState.allSpots[spotId].SpotImages.filter(img => img.id !== action.imageId);
-                }
+                newState.allSpots[spotId] = {
+                    ...newState.allSpots[spotId],
+                    SpotImages: newState.allSpots[spotId]?.SpotImages?.filter(
+                        img => img.id !== action.imageId
+                    ) || []
+                };
             });
-            // Remove image from singleSpot
+
+            // 2. Remove from singleSpot
             if (newState.singleSpot?.SpotImages) {
-                newState.singleSpot.SpotImages =
-                    newState.singleSpot.SpotImages.filter(img => img.id !== action.imageId);
+                newState.singleSpot = {
+                    ...newState.singleSpot,
+                    SpotImages: newState.singleSpot.SpotImages.filter(
+                        img => img.id !== action.imageId
+                    )
+                };
             }
             return newState;
         default:
             return state;
     }
+    //     case DELETE_SPOT_IMAGE:
+    //         newState = { ...state };
+    //         // Remove image from allSpots
+    //         Object.keys(newState.allSpots).forEach(spotId => {
+    //             if (newState.allSpots[spotId]?.SpotImages) {
+    //                 newState.allSpots[spotId].SpotImages =
+    //                     newState.allSpots[spotId].SpotImages.filter(img => img.id !== action.imageId);
+    //             }
+    //         });
+    //         // Remove image from singleSpot
+    //         if (newState.singleSpot?.SpotImages) {
+    //             newState.singleSpot.SpotImages =
+    //                 newState.singleSpot.SpotImages.filter(img => img.id !== action.imageId);
+    //         }
+    //         return newState;
+    //     default:
+    //         return state;
+    // }
 }
 
 export default spotImageReducer

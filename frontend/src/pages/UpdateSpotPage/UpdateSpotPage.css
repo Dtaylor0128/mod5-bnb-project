@@ -1,3 +1,15 @@
+.create-spot-form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.long-forms {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
 /* .preview-image {
     width: 120px;
     height: 90Px;

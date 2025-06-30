@@ -3,8 +3,9 @@ import { FaStar } from "react-icons/fa";
 import OpenModalButton from '../OpenModalButton';
 import ManageSpotDeleteModal from "./ManageSpotDeleteModal";
 import './ManageSpotCard.css';
-
+//1
 const ManageSpotCard = ({ spot }) => {
+
     const navigate = useNavigate();
 
     // Fallback for missing preview image

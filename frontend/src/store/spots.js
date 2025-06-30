@@ -46,19 +46,11 @@ export const getAllSpotsThunk = () => async (dispatch) => {
     const response = await csrfFetch('/api/spots');
     if (response.ok) {
         const data = await response.json();
-        console.log('API Response:', data); // Debug: Check structure
-        console.log('Spots Array:', data.Spots); // Debug: Check spots
 
         // Method 1: Using Object.fromEntries() + map()
         const normalized = Object.fromEntries(
             data.Spots.map(spot => [spot.id, spot])
         );
-
-        // Method 2: Using forEach() 
-        // const normalized = {};
-        // data.Spots.forEach(spot => {
-        //     normalized[spot.id] = spot;
-        // });
 
         dispatch(getAllSpots(normalized));
         return normalized;
@@ -111,23 +103,27 @@ export const updateSpotThunk = (spotData) => async (dispatch) => {
     }
 };
 
+
 export const deleteSpotThunk = (spotId) => async (dispatch) => {
-    const response = await csrfFetch(`/api/spots/${spotId}`, {
-        method: 'DELETE'
-    });
-    if (response.ok) {
-        dispatch(deleteSpot(spotId));
-        return spotId;
+    try {
+        const response = await csrfFetch(`/api/spots/${spotId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (response.ok) {
+            dispatch(deleteSpot(spotId));
+            return spotId;
+        } else {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to delete spot");
+        }
+    } catch (error) {
+        console.error("Delete spot error:", error);
+        throw error;
     }
 };
 
-// step 7
-// normalize our state
-// const initialState = {
-//     byId: {}, // to store spots by their ID
-//     getAllSpots: [], // to store all spots fetched
-
-// };
 
 //Inital state
 const initialState = {
@@ -142,11 +138,10 @@ const spotsReducer = (state = initialState, action) => {
         case GET_ALL_SPOTS:
             return {
                 ...state,
-                allSpots: action.payload // normalized in thunk
+                allSpots: action.payload
             };
 
         case GET_SPOT: {
-            // Wrapping in {} is fine, but always return state in default!
             const { id, SpotImages = [], ...spotData } = action.payload;
             return {
                 ...state,
@@ -164,35 +159,33 @@ const spotsReducer = (state = initialState, action) => {
 
         case CREATE_SPOT:
         case UPDATE_SPOT: {
-            //const updatedSpot = action.spot;
             return {
                 ...state,
                 allSpots: {
                     ...state.allSpots,
                     [action.payload.id]: action.payload
                 },
-                singleSpot: {
-                    [action.payload.id]: action.payload
-                }
+                singleSpot: action.payload
             };
         }
+
         case DELETE_SPOT: {
-            // Wrap in {} if you declare variables
             const newState = {
                 ...state,
                 allSpots: { ...state.allSpots },
-                singleSpot: {}
+                singleSpot: null
             };
-            delete newState.allSpots[action.payload];
+            // remove the deleted spot
+            if (newState.allSpots[action.payload]) {
+                delete newState.allSpots[action.payload];
+            }
             return newState;
         }
 
         default:
-            // Always return state in default!
             return state;
     }
 };
-
 
 export default spotsReducer;
 

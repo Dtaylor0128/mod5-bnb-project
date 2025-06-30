@@ -63,7 +63,6 @@ export const getReviewsThunk = (spotId) => async (dispatch) => {
 //     }
 // };
 export const deleteReviewThunk = (spotId, reviewId) => async (dispatch) => {
-    console.log('Thunk called with:', { spotId, reviewId }); // Debug
 
     const response = await csrfFetch(`/api/reviews/${reviewId}`, {
         method: "DELETE"

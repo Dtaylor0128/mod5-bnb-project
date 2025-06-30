@@ -8,7 +8,6 @@ import "./LandingPage.css"; // Assuming you have a CSS file for styling
 const LandingPage = () => {
     const dispatch = useDispatch();
     const spots = useSelector(selectAllSpots); // memoized selector
-    //console.log("Spots in LandingPage:", spots);
 
     useEffect(() => {
         dispatch(getAllSpotsThunk());
