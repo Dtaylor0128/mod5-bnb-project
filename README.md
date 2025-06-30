@@ -132,9 +132,9 @@ bySpotId: { [spotId]: { [reviewId]: { ...reviewData } } }
 ## **Known Issues**
 - **Review delete** is currently disabled
 - **Delete spot** works, but requires a manual refresh to update UI
-- **Bookings* disabled current a developing feature
+- **Bookings** disabled current a developing feature
 - Some minor image validation improvements pending
--
+- overall CSS minor tweaks needed for all meadi types
 
 ---
 
