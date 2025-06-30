@@ -63,14 +63,19 @@ export const getReviewsThunk = (spotId) => async (dispatch) => {
 //     }
 // };
 export const deleteReviewThunk = (spotId, reviewId) => async (dispatch) => {
-    console.log('Thunk called with:', { spotId, reviewId }); // Debug
 
     const response = await csrfFetch(`/api/reviews/${reviewId}`, {
         method: "DELETE"
     });
 
     if (response.ok) {
+        // delete from reviews state
         dispatch(deleteReview({ spotId, reviewId }));
+
+        // refresh spot data to update review counts
+        // dispatch(getSpotThunk(spotId)); // refresh spot
+        // dispatch(getReviewsThunk(spotId)); // refresh spot         
+
         return response;
     } else {
         // Log the error response
@@ -122,8 +127,10 @@ const reviewsReducer = (state = initialState, action) => {
         }
         case DELETE_REVIEW: {
             const { spotId, reviewId } = action.payload;
-            newState = { ...state, bySpotId: { ...state.bySpotId } };
+            const newState = { ...state, bySpotId: { ...state.bySpotId } };
+
             if (newState.bySpotId[spotId]) {
+                newState.bySpotId[spotId] = { ...newState.bySpotId[spotId] };
                 delete newState.bySpotId[spotId][reviewId];
             }
             return newState;

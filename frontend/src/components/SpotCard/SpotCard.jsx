@@ -5,12 +5,23 @@ import "./SpotCard.css";
 const SpotCard = ({ spot = {} }) => {
     const navigate = useNavigate();
     const [showTooltip, setShowTooltip] = useState(false);
-    const previewImage = spot.SpotImages?.find(img => img.preview)?.url || spot.previewImage;
+
     const handleClick = () => {
         navigate(`/spots/${spot.id}`);
     };
 
-    //console.log(`Spot ID: ${spot.id}, Avg Rating: ${spot.avgRating}`);
+
+    //format rating display
+    const displayRating = spot.avgRating
+        ? Number(spot.avgRating).toFixed(1)
+        : "New";
+
+    // Format review count 
+    const reviewCount = spot.numReviews || 0;
+    const reviewCountText = reviewCount === 1 ? "1 Review" : `${reviewCount} Reviews`;
+
+    //get preview image
+    const previewImage = spot.SpotImages?.find(img => img.preview)?.url || spot.previewImage;
 
     return (
         <div
@@ -18,25 +29,45 @@ const SpotCard = ({ spot = {} }) => {
             onClick={handleClick}
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
-            style={{ cursor: 'pointer' }}
         >
-            <div className="image-wrapper">
-                {previewImage && <img src={previewImage} alt={spot.name} className="spot-image" />}
-                {showTooltip && <div className="tooltip">{spot.name}</div>}
+            <div className="image-container">
+                <img
+                    src={previewImage}
+                    alt={spot.name}
+                    className="spot-image"
+                    onError={(e) => {
+                        e.target.src = "https://via.placeholder.com/400x300?text=No+Image";
+                    }}
+                />
+                {showTooltip && (
+                    <div className="tooltip">{spot.name}</div>
+                )}
             </div>
 
             <div className="spot-details">
-                <span className="top-line">
-                    <span>{spot.city}, {spot.state}</span>
-                    <span className="stars">
-                        <FaStar />
-                        {spot.avgRating ? spot.avgRating.toFixed(1) : 'New'}
+                <div className="location-rating">
+                    <span className="location">{spot.city}, {spot.state}</span>
+                    {/* Display rating with star icon */}
+                    <span className="rating">
+                        <FaStar className="star-icon" />
+                        {displayRating}
+                        {/* Show review count if greater than 0 */}
+                        {reviewCount > 0 && (
+                            <>
+                                <span className="dot"> · </span>
+                                <span className="review-count">{reviewCountText}</span>
+                            </>
+                        )}
                     </span>
-                </span>
-                <p>${spot.price} / night</p>
+                </div>
+                <div className="price">
+                    <span className="price-amount">${spot.price}</span>
+                    <span className="night-label"> night</span>
+                </div>
             </div>
         </div>
-    )
+    );
+
 }
 
 export default SpotCard

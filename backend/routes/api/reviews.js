@@ -155,45 +155,42 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res, next) => 
 
 // Route to delete an existing review
 router.delete('/:reviewId', requireAuth, async (req, res) => {
+
   try {
     const { reviewId } = req.params;
     const userId = req.user.id;
 
-    console.log(`Attempting to delete review ${reviewId} by user ${userId}`);
-
-    // Find the review by its ID
+    // // Find the review by its ID
     const review = await Review.findByPk(reviewId);
     if (!review) {
       return res.status(404).json({
         message: "Review not found",
 
-        status: 404
       });
     }
+    // // Check if the review belongs to the current user
+    // if (review.userId !== userId) {
+    //   return res.status(403).json({
+    //     message: "Forbidden",
+    //     errors: { message: "You don't have permission to delete this review" },
+    //   });
+    // }
+    // // If the review exists and belongs to the user, delete it
+    if (review) {
+      // Use the destroy method to delete the review
+      const reviewDestroy = await review.destroy();
 
-    // Check if the review belongs to the current user
-    if (review.userId !== userId) {
-      return res.status(403).json({
-        message: "Forbidden",
-        title: "Authorization required",
-        errors: { message: "You don't have permission to delete this review" },
-        status: 403
+      // if (reviewDestroy) {
+      res.status(200).json({
+        message: "Review deleted successfully"
       });
+      //  }
     }
-
-    // If the review exists and belongs to the user, delete it
-    await review.destroy();
-    res.status(200).json({
-      message: "Review deleted successfully"
-    });
 
   } catch (error) {
     console.error("DELETE review error:", error);
     res.status(500).json({
       message: "Internal server error",
-      title: "Server Error",
-      errors: { message: "Something went wrong" },
-      status: 500
     });
   }
 });

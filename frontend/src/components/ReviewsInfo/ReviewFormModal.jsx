@@ -24,6 +24,18 @@ function ReviewFormModal({ spotId }) {
         (review) => review.userId === sessionUser?.id
     );
 
+    // reset form on mount
+    useEffect(() => {
+        setReview("");
+        setStars(0);
+        setHover(0);
+        setErrors({});
+        setHasSubmitted(false);
+        setServerError("");
+    }, []);
+
+
+    // Check if the user has already reviewed this spot
     useEffect(() => {
         const errors = {};
         if (review.length < 10) errors.review = 'Must be at least 10 characters'
@@ -31,6 +43,9 @@ function ReviewFormModal({ spotId }) {
         if (reviewExists) errors.review = "Review already exists for this spot"
         setErrors(errors);
     }, [review, stars, sessionUser?.id, reviewExists])
+
+    // button disabled if there are errors
+    const isDisabled = review.length < 10 || stars === 0 || Object.keys(errors).length > 0 || reviewExists;
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -55,10 +70,10 @@ function ReviewFormModal({ spotId }) {
         }
     }
 
-    const isDisabled = Object.values(errors).length >= 1
+
 
     return (
-        <div className="review-modal modal-box">
+        <div className="review-modal">
             <h1>How was your stay?</h1>
             {serverError && <p className="server-error">{serverError}</p>}
             <form onSubmit={handleSubmit} className="review-form">
@@ -99,7 +114,7 @@ function ReviewFormModal({ spotId }) {
                             </span>
                         </label>
                     ))}
-                    <span>Stars</span>
+                    <span className="stars-label">Stars</span>
                 </div>
                 {hasSubmitted && errors.stars && <p>{errors.stars}</p>}
                 <button disabled={isDisabled} type="submit" className="review-submit-button" >

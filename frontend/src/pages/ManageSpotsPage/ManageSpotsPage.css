@@ -1,0 +1,66 @@
+.manage-spots-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    color: #222;
+}
+
+.loading {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #534d4d;
+    margin: 2rem 0;
+}
+
+.no-spots-container {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.no-spots-container p {
+    font-size: 1.2rem;
+    color: #3d3535;
+    margin-bottom: 1.5rem;
+}
+
+.create-spot-link {
+    background: #ff5a5f;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+
+.create-spot-link:hover {
+    background: #e04448;
+}
+
+.spots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+@media (max-width: 768px) {
+    .spots-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .manage-spots-page {
+        padding: 1rem 0.5rem;
+    }
+}

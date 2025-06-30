@@ -105,11 +105,26 @@ app.use((err, _req, res, _next) => {
     });
   }
 });//print all errors to the console
-app.use((err, req, res, next) => {
-  console.error(err); // This should print all errors
-  res.status(err.status || 500).json({ message: err.message });
-});
+// app.use((err, req, res, next) => {
+//   console.error(err); // This should print all errors
+//   res.status(err.status || 500).json({ message: err.message });
+// });
 
+app.use((err, req, res, next) => {
+  console.error('Server Error:', err);
+
+  if (err.status) {
+    res.status(err.status).json({
+      message: err.message,
+      errors: err.errors
+    });
+  } else {
+    res.status(500).json({
+      message: 'Internal Server Error',
+      error: process.env.NODE_ENV === 'production' ? {} : err
+    });
+  }
+});
 
 module.exports = app;
 /* Central config file for expreess app resposible for Middlewares, Routes, and Error Handling(se

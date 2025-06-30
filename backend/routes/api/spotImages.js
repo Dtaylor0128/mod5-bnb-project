@@ -12,37 +12,30 @@ const { Spot, SpotImage } = require('../../db/models');
 
 // Complete route /api/spot-images/:imageId
 // Delete a Spot Image
+
 router.delete('/:imageId', requireAuth, async (req, res, next) => {
     try {
         const imageId = req.params.imageId;
+        const image = await SpotImage.findByPk(imageId);
 
-        // Find spotimage and include the associated spot to check if spot belongs to owner
-        const spotImage = await SpotImage.findByPk(imageId, {
-            include: [{ model: Spot }]
+        if (!image) {
+            return res.status(404).json({ message: "Spot Image couldn't be found" });
+        }
+
+        // Verify ownership through the spot
+        const spot = await Spot.findByPk(image.spotId);
+        if (spot.ownerId !== req.user.id) {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+
+        await image.destroy();
+        return res.status(200).json({
+            message: "Successfully deleted",
+            deletedImage: image
         });
-
-        if (!spotImage) {
-            const error = new Error("Spot Image couldn't be found");
-            error.status = (404);
-            throw error;
-        }
-
-        // If the logged in user is not the owner of the spot
-        if (req.user.id !== spotImage.Spot.ownerId) {
-            const error = new Error("Forbidden");
-            error.status = (403);
-            throw error;
-        }
-
-        await spotImage.destroy();
-
-        res.status(200);
-        return res.json({ message: "Successfully deleted" });
-
     } catch (error) {
-        next(error); // Error handling stuff in app.js
+        next(error);
     }
 });
 
-// Exports the route that will be used in the api/index.js
 module.exports = router;
