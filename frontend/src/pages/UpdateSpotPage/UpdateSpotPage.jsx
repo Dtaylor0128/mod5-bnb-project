@@ -196,21 +196,29 @@ const UpdateSpotForm = () => {
 
                 // Update other images
                 const nonPreviewImages = currentImages.filter(img => !img.preview);
-
-                // Delete only removed images
                 for (const img of nonPreviewImages) {
-                    if (!images.others.includes(img.url)) {
-                        try {
-                            await dispatch(deleteSpotImageThunk(img.id));
-                        } catch (error) {
-                            console.error(`Error deleting image ${img.id}:`, error);
-                        }
+                    try {
+                        await dispatch(deleteSpotImageThunk(img.id));
+                    } catch (error) {
+                        console.error(`Error deleting image ${img.id}:`, error);
                     }
                 }
+                // const nonPreviewImages = currentImages.filter(img => !img.preview);
+
+                // // Delete only removed images
+                // for (const img of nonPreviewImages) {
+                //     if (!images.others.includes(img.url)) {
+                //         try {
+                //             await dispatch(deleteSpotImageThunk(img.id));
+                //         } catch (error) {
+                //             console.error(`Error deleting image ${img.id}:`, error);
+                //         }
+                //     }
+                // }
 
                 // Add new images
                 for (const url of images.others) {
-                    if (url && !nonPreviewImages.some(img => img.url === url)) {
+                    if (url) {
                         try {
                             await dispatch(createSpotImageThunk(spotId, {
                                 url,
@@ -221,11 +229,24 @@ const UpdateSpotForm = () => {
                         }
                     }
                 }
+                // for (const url of images.others) {
+                //     if (url && !nonPreviewImages.some(img => img.url === url)) {
+                //         try {
+                //             await dispatch(createSpotImageThunk(spotId, {
+                //                 url,
+                //                 preview: false
+                //             }));
+                //         } catch (error) {
+                //             console.error("Error creating new image:", error);
+                //         }
+                //     }
+                // }
 
                 navigate(`/spots/${spotId}`);
             }
         } catch (error) {
             console.error("Update failed:", error);
+            setFormErrors({ general: "Update failed, Please try again." })
         }
     };
 
