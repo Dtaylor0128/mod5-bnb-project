@@ -53,7 +53,7 @@ const ManageSpotsPage = () => {
             {/* "Create a New Spot" link if no spots */}
             {userSpots.length === 0 ? (
                 <div className="no-spots-container">
-                    <p>You haven't created any spots yet.</p>
+                    <p>You haven&#39;t created any spots yet.</p>
                     <button
                         className="create-spot-link"
                         onClick={() => navigate("/spots/new")}
