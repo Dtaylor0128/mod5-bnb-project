@@ -60,8 +60,7 @@ const UpdateSpotForm = () => {
             setPrice(spot.price !== undefined ? spot.price : "");
             setLat(spot.lat || 0);
             setLng(spot.lng || 0);
-            // setLat(spot.lat !== undefined ? spot.lat : 0);
-            // setLng(spot.lng !== undefined ? spot.lng : 0);
+
 
             // intialize images state with existing spot images
             if (spot.SpotImages?.length > 0) {
